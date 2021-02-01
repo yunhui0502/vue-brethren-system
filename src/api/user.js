@@ -172,7 +172,7 @@ function updateType(params) {
     console.log(params);
     fd.append('area', params.area);
     fd.append('houseId', params.houseId);
-    // fd.append('constitute', params.constitute);
+    fd.append('constitute', params.constitute);
     fd.append('guestWide', params.guestWide);
     fd.append('houseFiles', params.houseFiles);
     fd.append('houseName', params.houseName);

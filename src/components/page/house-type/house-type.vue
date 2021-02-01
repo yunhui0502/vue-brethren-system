@@ -35,14 +35,19 @@
                 <el-table-column prop="typeName" label="户型名称" align="center"></el-table-column>
                 <el-table-column prop="premisesName" align="center" label="所属楼盘"></el-table-column>
                 <el-table-column prop="area" align="center" label="户型面积"></el-table-column>
-                <el-table-column align="supply" label="提供套数"></el-table-column>
-                <el-table-column align="transaction" prop="address" label="成交套数"></el-table-column>
+                <el-table-column align="center" prop="supply" label="提供套数"></el-table-column>
+                <el-table-column align="center" prop="transaction" label="成交套数"></el-table-column>
 
-                <el-table-column align="ratio" prop="date" label="供求比"></el-table-column>
-                <el-table-column align="center" prop="date" label="开间数"></el-table-column>
-                <el-table-column align="center" prop="date" label="卧室数"></el-table-column>
-                <el-table-column align="center" prop="date" label="厅数"></el-table-column>
-                <el-table-column align="center" prop="date" label="卫生间"></el-table-column>
+                <el-table-column align="center" prop="ratio" label="供求比"></el-table-column>
+
+                <el-table-column align="center" prop="date"  label="房间数量">
+                    <template slot-scope="scope" >
+                       <div v-for="item in scope.row.constitute" :key="item.constituteId"> 
+                        {{item.typeName}}: {{item.value}}
+                       </div>
+                    </template>
+                </el-table-column>
+               
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -172,16 +177,16 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="所属项目">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.projectName"></el-input>
                 </el-form-item>
                 <el-form-item label="所属区域">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.administrativeName"></el-input>
                 </el-form-item>
                 <el-form-item label="所属板块">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.plateName"></el-input>
                 </el-form-item>
                 <el-form-item label="所属土地">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.landName"></el-input>
                 </el-form-item>
 
                 <el-form-item label="户型图">
@@ -190,7 +195,7 @@
                         action="http://39.98.126.20:7004/user/File/fileUpLoad"
                         :on-preview="handlePreview"
                         :on-remove="handleRemove"
-                        :on-success="handleAvatarSuccess"
+                        :on-success="handleAvatarSuccess2"
                         :before-remove="beforeRemove"
                         multiple
                         :on-exceed="handleExceed"
@@ -221,7 +226,7 @@
                 </el-form-item>
 
                 <el-form-item :label="item.constituteName" v-for="item in options2" :key="item.id">
-                    <el-input v-model="item.value" @blur="blur(item.value, item.id)"></el-input>
+                    <el-input v-model="item.value" @blur="blur2(item.value, item.id)"></el-input>
                 </el-form-item>
 
                 <el-form-item label="南向总面宽">
@@ -299,6 +304,7 @@ export default {
                 premisesId: '', // 楼盘id
                 southWide: '', // 南向总面宽
                 supply: '', // 供应套数
+                AvatarSuccess: true,
                 transaction: '' // 成交套数
             },
             query: {
@@ -352,6 +358,12 @@ export default {
             this.form.constitute[id] = value;
             console.log('constitute', this.form.constitute);
         },
+         blur2(value, id) {
+            console.log('value', value);
+            console.log('id', id);
+            this.form2.constitute[id] = value;
+            console.log('constitute', this.form.constitute);
+        },
         selectConstitute() {
             userApi.selectConstitute((res) => {
                 console.log(res);
@@ -395,8 +407,13 @@ export default {
             });
         },
         onSubmit2() {
-            // this.form.constitute = JSON.stringify(this.form.constitute);
-            userApi.updateType(this.form, (res) => {
+            if (this.form2.AvatarSuccess) {
+                console.log(2);
+                this.form2.houseFiles = [];
+            }
+            this.form2.constitute = JSON.stringify(this.form2.constitute);
+            console.log(this.form2.constitute);
+            userApi.updateType(this.form2, (res) => {
                 console.log(res);
                 this.$message.success('修改成功！');
                 this.editVisible2 = true;
@@ -407,6 +424,12 @@ export default {
             this.imageUrl = URL.createObjectURL(file.raw);
             console.log(res);
             this.form.houseFiles.push(res.data);
+        },
+         handleAvatarSuccess2(res, file) {
+            this.imageUrl = URL.createObjectURL(file.raw);
+            console.log(res);
+            this.form2.AvatarSuccess = false;
+            this.form2.houseFiles.push(res.data);
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -475,11 +498,12 @@ export default {
         // 编辑操作
         handleEdit(index, row) {
             this.idx = index;
+            // this.form2 = row;
             this.form2.houseName = row.typeName;
             this.form2.houseId = row.typeId;
             this.form2.guestWide = row.guestWide;
             this.form2.area = row.area;
-            this.form2.houseFiles = row.files;
+            this.form2.houseFiles = row.files || [];
             this.form2.livingWide = row.livingWide;
             this.form2.masterWide = row.masterWide;
             this.form2.premisesId = row.premisesId;
