@@ -51,8 +51,8 @@ async function deleteProject(params,handleResult) {
 async function updateProject(params,handleResult) {
    user.updateProject(params).then((res) => handleResult(res));
 }
-async function selectProject(handleResult) {
-   user.selectProject().then((res) => handleResult(res));
+async function selectProject(params,handleResult) {
+   user.selectProject(params).then((res) => handleResult(res));
 }
 async function addType(params,handleResult) {
    user.addType(params).then((res) => handleResult(res));
@@ -116,6 +116,18 @@ async function loginDelete(params,handleResult) {
 async function system(params,handleResult) {
    user.system(params).then((res) => handleResult(res));
 }
+async function addAdministrative(params,handleResult) {
+   user.addAdministrative(params).then((res) => handleResult(res));
+}
+async function updateAdministrative(params,handleResult) {
+   user.updateAdministrative(params).then((res) => handleResult(res));
+}
+async function deleteAdministrative(params,handleResult) {
+   user.deleteAdministrative(params).then((res) => handleResult(res));
+}
+async function selectAdministrative(handleResult) {
+   user.selectAdministrative().then((res) => handleResult(res));
+}
 export default {
     adminLogin: adminLogin,
     phoneLogin: phoneLogin,
@@ -154,4 +166,8 @@ export default {
     selectLand: selectLand,
     loginDelete: loginDelete,
     system: system,
+    addAdministrative: addAdministrative,
+    updateAdministrative: updateAdministrative,
+    deleteAdministrative: deleteAdministrative,
+    selectAdministrative: selectAdministrative,
 };

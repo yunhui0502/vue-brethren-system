@@ -3,24 +3,31 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                <el-select v-model="query.adminId" clearable placeholder="请选择区域" class="handle-select mr10">
+                    <el-option v-for="item in administrative" :key="item.id" :label="item.administrativeName" :value="item.id"></el-option>
                 </el-select>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                <el-select v-model="query.projectId" clearable placeholder="请选择项目" class="handle-select mr10">
+                    <el-option
+                        v-for="item in selectProjectData"
+                        :key="item.projectId"
+                        :label="item.projectName"
+                        :value="item.projectId"
+                    ></el-option>
                 </el-select>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                <el-select v-model="query.plateId" clearable placeholder="请选择板块" class="handle-select mr10">
+                    <el-option
+                        v-for="item in selectPlateData"
+                        :key="item.plateId"
+                        :label="item.plateName"
+                        :value="item.plateId"
+                    ></el-option>
                 </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.landName" placeholder="用户名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" style="float: right" @click="editVisible = true">添加土地</el-button>
             </div>
             <el-table
-                :data="tableData"
+                :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
                 border
                 class="table"
                 ref="multipleTable"
@@ -33,7 +40,7 @@
                 <el-table-column align="center" prop="plateName" label="所属板块"></el-table-column>
                 <el-table-column align="center" prop="architectureArea" label="容积率"></el-table-column>
                 <el-table-column align="center" prop="transactionPrice" label="成交价格(亿元)"></el-table-column>
-                <el-table-column align="center" prop="date" label="楼面价(元/㎡)"></el-table-column>
+                <!-- <el-table-column align="center" prop="date" label="楼面价(元/㎡)"></el-table-column> -->
                 <el-table-column align="center" prop="transfer" label="受让方"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
@@ -75,9 +82,16 @@
                 <el-form-item label="土地地址">
                     <el-input v-model="form.landAddress"></el-input>
                 </el-form-item>
-                <el-form-item label="所属区域">
-                    <el-input v-model="form.administrativeName"></el-input>
-                </el-form-item>
+                <!-- <el-form-item label="所属区域">
+                    <el-select v-model="form.administrativeName" placeholder="请选择区域" class="handle-select mr10">
+                        <el-option
+                            v-for="item in administrative"
+                            :key="item.id"
+                            :label="item.administrativeName"
+                            :value="item.administrativeName"
+                        ></el-option>
+                    </el-select>
+                </el-form-item> -->
                 <el-form-item label="所属板块">
                     <el-select v-model="form.plateId" placeholder="请选择">
                         <el-option
@@ -218,8 +232,10 @@ export default {
     name: 'basetable',
     data() {
         return {
-            selectPlateData: '',
-            selectProjectData: '',
+            selectPlateData: [],
+            selectProjectData: [],
+            administrative: [],
+
             form: {
                 name2: '不可修改',
                 delivery: true,
@@ -261,8 +277,10 @@ export default {
                 transfer: '' // 受让方名称
             },
             query: {
-                address: '',
-                name: '',
+                adminId: '',
+                plateId: '',
+                projectId: '',
+                landName: '',
                 pageIndex: 1,
                 pageSize: 10
             },
@@ -281,16 +299,33 @@ export default {
         this.getData();
         this.selectProject();
         this.selectPlate();
+        this.selectAdministrative();
     },
     methods: {
+        // selectPlate() {
+        //     userApi.selectPlate((res) => {
+        //         console.log(res.data);
+        //         this.tableData = res.data.data;
+        //         this.tableData.forEach((item) => {
+        //             // item.averagePrice = (item.averagePrice / 100).toFixed(2);
+        //         });
+        //         this.editVisible = false;
+        //     });
+        // },
+        selectAdministrative() {
+            userApi.selectAdministrative((res) => {
+                console.log('区域', res);
+                this.administrative = res.data.data;
+            });
+        },
         selectPlate() {
             userApi.selectPlate((res) => {
-                console.log(res.data);
+                console.log('板块', res.data);
                 this.selectPlateData = res.data.data;
             });
         },
         selectProject() {
-            userApi.selectProject((res) => {
+            userApi.selectProject({}, (res) => {
                 console.log('项目', res);
                 this.selectProjectData = res.data.data;
             });
@@ -320,14 +355,28 @@ export default {
             //     this.tableData = res.list;
             //     this.pageTotal = res.pageTotal || 50;
             // });
-            userApi.selectLand({}, (res) => {
+            let Obj = {};
+            if (this.query.adminId != '') {
+                Obj.adminId = this.query.adminId;
+            }
+            if (this.query.plateId != '') {
+                Obj.plateId = this.query.plateId;
+            }
+            if (this.query.projectId != '') {
+                Obj.projectId = this.query.projectId;
+            }
+            if (this.query.landName != '') {
+                Obj.landName = this.query.landName;
+            }
+            userApi.selectLand(Obj, (res) => {
                 console.log('土地', res);
                 this.tableData = res.data.data;
+                this.pageTotal = this.tableData.length;
             });
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
+            // this.$set(this.query, 'pageIndex', 1);
             this.getData();
         },
         // 删除操作
@@ -368,7 +417,7 @@ export default {
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
-            this.getData();
+            // this.getData();
         }
     }
 };

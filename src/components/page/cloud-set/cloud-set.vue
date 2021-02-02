@@ -17,7 +17,7 @@
             <div v-if="tabIndex == 1">
                 <el-table
                     align="center"
-                    :data="tableData"
+                    :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
                     border
                     class="table"
                     ref="multipleTable"
@@ -42,7 +42,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <!-- <div class="pagination">
+                <div class="pagination">
                     <el-pagination
                         background
                         layout="total, prev, pager, next"
@@ -51,7 +51,7 @@
                         :total="pageTotal"
                         @current-change="handlePageChange"
                     ></el-pagination>
-                </div> -->
+                </div>
             </div>
 
             <div v-if="tabIndex == 2" class="form-box">
@@ -199,13 +199,13 @@ export default {
             userApi.loginSelect((res) => {
                 console.log(res);
                 this.tableData = res.data.data;
-                // this.pageTotal = res.pageTotal || 0;
+                this.pageTotal = this.tableData.length;
             });
         },
         // 触发搜索按钮
         handleSearch() {
             this.$set(this.query, 'pageIndex', 1);
-            this.getData();
+            // this.getData();
         },
         // 删除操作
         handleDelete(index, row) {

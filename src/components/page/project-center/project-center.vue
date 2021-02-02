@@ -5,10 +5,10 @@
             <div class="handle-box">
                 <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button type="primary" style="float: right;margin: 20px;" @click="add">添加</el-button>
+                <el-button type="primary" style="float: right; margin: 20px" @click="add">添加</el-button>
             </div>
             <el-table
-                :data="tableData"
+                :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
                 border
                 class="table"
                 ref="multipleTable"
@@ -30,7 +30,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <!-- <div class="pagination">
+            <div class="pagination">
                 <el-pagination
                     background
                     layout="total, prev, pager, next"
@@ -39,7 +39,7 @@
                     :total="pageTotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
-            </div> -->
+            </div>
         </div>
 
         <!-- 编辑弹出框 -->
@@ -53,15 +53,15 @@
                 </el-form-item> -->
                 <el-form-item label="所以土地/楼盘">
                     <el-table
-                        :data="tableData"
+                        :data="selectPremisesData"
                         border
                         class="table"
                         ref="multipleTable"
                         header-cell-class-name="table-header"
                         @selection-change="handleSelectionChange"
                     >
-                        <el-table-column prop="name" align="center" label="土地名称"></el-table-column>
-                        <el-table-column prop="address" align="center" label="楼盘名称"></el-table-column>
+                        <el-table-column prop="landName" align="center" label="土地名称"></el-table-column>
+                        <el-table-column prop="premisesName" align="center" label="楼盘名称"></el-table-column>
                     </el-table>
                 </el-form-item>
             </el-form>
@@ -81,6 +81,7 @@ export default {
     data() {
         return {
             title: '',
+            selectPremisesData:'',
             query: {
                 address: '',
                 name: '',
@@ -89,7 +90,7 @@ export default {
             },
             form: {
                 projectName: '',
-                developersName: ''
+                developersName: '开发商名称,开发商'
             },
             tableData: [],
             multipleSelection: [],
@@ -102,8 +103,15 @@ export default {
     },
     created() {
         this.getData();
+        this.selectPremises();
     },
     methods: {
+        selectPremises() {
+            userApi.selectPremises({}, (res) => {
+                console.log('楼盘', res);
+                this.selectPremisesData = res.data.data;
+            });
+        },
         add() {
             this.title = '添加';
             this.editVisible = true;
@@ -115,10 +123,16 @@ export default {
             //     this.tableData = res.list;
             //     this.pageTotal = res.pageTotal || 50;
             // });
-            userApi.selectProject((res) => {
+            let Obj = {
+                
+            }
+            if (this.query.name != '') {
+                Obj.projectName = this.query.name
+            }
+            userApi.selectProject(Obj,(res) => {
                 console.log(res);
                 this.tableData = res.data.data;
-               
+                this.pageTotal = this.tableData.length;
             });
         },
         // 添加
@@ -141,7 +155,7 @@ export default {
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
+            // this.$set(this.query, 'pageIndex', 1);
             this.getData();
         },
         // 删除操作
@@ -186,7 +200,7 @@ export default {
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
-            this.getData();
+            // this.getData();
         }
     }
 };

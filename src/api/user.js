@@ -70,7 +70,7 @@ function addPlate(params) {
     fd.append('averagePrice', params.averagePrice);
     fd.append('developMessage', params.developMessage);
     fd.append('plateAddress', params.plateAddress);
-    // fd.append('plateLabelId', params.plateLabelId);
+    fd.append('plateLabelId', params.plateLabelId);
     fd.append('plateName', params.plateName);
     return Axios.post(api + '/user/Plate/addPlate', fd);
 }
@@ -127,8 +127,8 @@ function updateProject(params) {
     return Axios.post(api + '/user/Login/updateProject', fd);
 }
 // 查询项目信息
-function selectProject() {
-    return Axios.get(api + '/user/Login/selectProject');
+function selectProject(params) {
+    return Axios.get(api + '/user/Login/selectProject', { params });
 }
 // 添加户型
 function addType(params) {
@@ -331,6 +331,32 @@ function system(params) {
     fd.append('name', params.name);
     return Axios.post(api + '/user/Login/system', fd);
 }
+// 添加区域
+function addAdministrative(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('name', params.name);
+    return Axios.post(api + '/user/Administrative/addAdministrative', fd);
+}
+// 修改区域
+function updateAdministrative(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('id', params.id);
+    fd.append('name', params.name);
+    return Axios.post(api + '/user/Administrative/updateAdministrative', fd);
+}
+// 删除区域
+function deleteAdministrative(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('id', params.id);
+    return Axios.post(api + '/user/Administrative/deleteAdministrative', fd);
+}
+// 查询区域
+function selectAdministrative() {
+    return Axios.get(api + '/user/Administrative/selectAdministrative');
+}
 export default {
     adminLogin: adminLogin,
     phoneLogin: phoneLogin,
@@ -369,4 +395,8 @@ export default {
     selectLand: selectLand,
     loginDelete: loginDelete,
     system: system,
+    addAdministrative: addAdministrative,
+    updateAdministrative: updateAdministrative,
+    deleteAdministrative: deleteAdministrative,
+    selectAdministrative: selectAdministrative,
 };

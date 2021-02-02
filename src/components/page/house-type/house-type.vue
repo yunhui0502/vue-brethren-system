@@ -3,19 +3,26 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                <el-select v-model="query.adminId" clearable placeholder="请选择区域" class="handle-select mr10">
+                    <el-option v-for="item in administrative" :key="item.id" :label="item.administrativeName" :value="item.id"></el-option>
                 </el-select>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                <el-select v-model="query.projectId" clearable placeholder="请选择项目" class="handle-select mr10">
+                    <el-option
+                        v-for="item in selectProjectData"
+                        :key="item.projectId"
+                        :label="item.projectName"
+                        :value="item.projectId"
+                    ></el-option>
                 </el-select>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
+                <el-select v-model="query.plateId" clearable placeholder="请选择板块" class="handle-select mr10">
+                    <el-option
+                        v-for="item in selectPlateData"
+                        :key="item.plateId"
+                        :label="item.plateName"
+                        :value="item.plateId"
+                    ></el-option>
                 </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.typeName" placeholder="用户名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
 
                 <el-button type="primary" style="float: right" @click="editVisible = true">添加户型</el-button>
@@ -25,7 +32,7 @@
                 </el-select>
             </div>
             <el-table
-                :data="tableData"
+                :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
                 border
                 class="table"
                 ref="multipleTable"
@@ -40,14 +47,12 @@
 
                 <el-table-column align="center" prop="ratio" label="供求比"></el-table-column>
 
-                <el-table-column align="center" prop="date"  label="房间数量">
-                    <template slot-scope="scope" >
-                       <div v-for="item in scope.row.constitute" :key="item.constituteId"> 
-                        {{item.typeName}}: {{item.value}}
-                       </div>
+                <el-table-column align="center" prop="date" label="房间数量">
+                    <template slot-scope="scope">
+                        <div v-for="item in scope.row.constitute" :key="item.constituteId">{{ item.typeName }}: {{ item.value }}</div>
                     </template>
                 </el-table-column>
-               
+
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -89,7 +94,12 @@
                 </el-form-item>
                 <el-form-item label="所属楼盘">
                     <el-select v-model="form.premisesId" placeholder="请选择">
-                        <el-option :key="item.premisesId" v-for="item in PremisesData" :label="item.premisesName" :value="item.premisesId"></el-option>
+                        <el-option
+                            :key="item.premisesId"
+                            v-for="item in PremisesData"
+                            :label="item.premisesName"
+                            :value="item.premisesId"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="所属项目">
@@ -173,7 +183,12 @@
                 </el-form-item>
                 <el-form-item label="所属楼盘">
                     <el-select v-model="form2.premisesId" placeholder="请选择">
-                        <el-option :key="item.premisesId" v-for="item in PremisesData" :label="item.premisesName" :value="item.premisesId"></el-option>
+                        <el-option
+                            :key="item.premisesId"
+                            v-for="item in PremisesData"
+                            :label="item.premisesName"
+                            :value="item.premisesId"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="所属项目">
@@ -258,6 +273,10 @@ export default {
     name: 'basetable',
     data() {
         return {
+            selectPlateData: [],
+            selectProjectData: [],
+            administrative: [],
+
             fileList: [],
             dialogFormVisible: false,
             value: '',
@@ -268,7 +287,7 @@ export default {
             PremisesData: '',
             form: {
                 name: '',
-                name2: '不可修改',
+                name2: '',
                 delivery: true,
                 type: ['步步高'],
                 resource: '小天才',
@@ -308,8 +327,10 @@ export default {
                 transaction: '' // 成交套数
             },
             query: {
-                address: '',
-                name: '',
+                adminId: '',
+                plateId: '',
+                projectId: '',
+                typeName: '',
                 pageIndex: 1,
                 pageSize: 10
             },
@@ -328,8 +349,30 @@ export default {
         this.getData();
         this.selectConstitute();
         this.selectPremises();
+
+        this.selectProject();
+        this.selectPlate();
+        this.selectAdministrative();
     },
     methods: {
+        selectAdministrative() {
+            userApi.selectAdministrative((res) => {
+                console.log('区域', res);
+                this.administrative = res.data.data;
+            });
+        },
+        selectPlate() {
+            userApi.selectPlate((res) => {
+                console.log('板块', res.data);
+                this.selectPlateData = res.data.data;
+            });
+        },
+        selectProject() {
+            userApi.selectProject({}, (res) => {
+                console.log('项目', res);
+                this.selectProjectData = res.data.data;
+            });
+        },
         selectPremises() {
             userApi.selectPremises({}, (res) => {
                 console.log('楼盘', res);
@@ -358,7 +401,7 @@ export default {
             this.form.constitute[id] = value;
             console.log('constitute', this.form.constitute);
         },
-         blur2(value, id) {
+        blur2(value, id) {
             console.log('value', value);
             console.log('id', id);
             this.form2.constitute[id] = value;
@@ -378,7 +421,7 @@ export default {
             });
         },
         onSubmit() {
-            console.log(this.form)
+            console.log(this.form);
             this.form.constitute = JSON.stringify(this.form.constitute);
             userApi.addType(this.form, (res) => {
                 console.log(res);
@@ -425,7 +468,7 @@ export default {
             console.log(res);
             this.form.houseFiles.push(res.data);
         },
-         handleAvatarSuccess2(res, file) {
+        handleAvatarSuccess2(res, file) {
             this.imageUrl = URL.createObjectURL(file.raw);
             console.log(res);
             this.form2.AvatarSuccess = false;
@@ -457,6 +500,7 @@ export default {
             userApi.selectType({}, (res) => {
                 console.log(res);
                 this.tableData = res.data.data;
+                this.pageTotal = this.tableData.length;
             });
         },
 
@@ -500,6 +544,10 @@ export default {
             this.idx = index;
             // this.form2 = row;
             this.form2.houseName = row.typeName;
+            this.form2.projectName = row.projectName;
+            this.form2.administrativeName = row.administrativeName;
+            this.form2.plateName = row.plateName;
+            this.form2.landName = row.landName;
             this.form2.houseId = row.typeId;
             this.form2.guestWide = row.guestWide;
             this.form2.area = row.area;
@@ -521,7 +569,7 @@ export default {
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
-            this.getData();
+            // this.getData();
         }
     }
 };
