@@ -357,6 +357,130 @@ function deleteAdministrative(params) {
 function selectAdministrative() {
     return Axios.get(api + '/user/Administrative/selectAdministrative');
 }
+
+// 新建库
+function addLibrary(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('libraryName', params.libraryName);
+    return Axios.post(api + '/user/Tower/addLibrary', fd);
+}
+// 添加分类
+function addLibraryaddCategory(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('categoryName', params.categoryName);
+    fd.append('libraryId', params.libraryId);
+    fd.append('parentCategoryId', params.parentCategoryId);
+    if(params.text != undefined) {
+        console.log('111')
+        fd.append('text', params.text);
+    }
+    if(params.text != undefined) {
+        fd.append('type', params.type);
+    }
+    // return Axios.post(api + '/user/Tower/addLibraryaddCategory', fd);
+}
+// 新建楼号
+function addTower(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('premisesId', params.premisesId);
+    fd.append('towerNo', params.towerNo);
+    return Axios.post(api + '/user/Tower/addTower', fd);
+}
+// 查询库
+function selectLibrary() {
+    return Axios.get(api + '/user/Tower/selectLibrary');
+}
+// 查询库详情
+function selectLibraryDetails(params) {
+
+    return Axios.get(api + '/user/Tower/selectLibraryDetails', { params });
+}
+// 查询
+function selectTower() {
+    return Axios.get(api + '/user/Tower/selectTower');
+}
+// 查找最低分类
+function category(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('premisesId', params.premisesId);
+    fd.append('towerNo', params.towerNo);
+    return Axios.post(api + '/user/Tower/category', fd);
+}
+// 删除库
+function deleteLibrary(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('libraryId', params.libraryId);
+    return Axios.post(api + '/user/Tower/deleteLibrary', fd);
+}
+// 删除分类
+function deleteLibraryCategory(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('categoryId', params.categoryId);
+    return Axios.post(api + '/user/Tower/deleteLibraryCategory', fd);
+}
+// 删除库分类下的文本或者图片
+function deleteLibraryCategoryText(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('categoryId', params.categoryId);
+    return Axios.post(api + '/user/Tower/deleteLibraryCategoryText', fd);
+}
+// 删除楼号的库
+function deleteTowerLibrary(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('libraryId', params.libraryId);
+    fd.append('towerId', params.towerId);
+    return Axios.post(api + '/user/Tower/deleteTowerLibrary', fd);
+}
+// 添加楼号的库
+function towerLibrary(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('libraryIds', params.libraryIds);
+    fd.append('towerId', params.towerId);
+    return Axios.post(api + '/user/Tower/towerLibrary', fd);
+}
+// 添加取消楼号的库
+function towerLibraryCategory(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('categoryIds', params.categoryIds);
+    fd.append('towerLibrarys', params.towerLibrarys);
+    return Axios.post(api + '/user/Tower/towerLibraryCategory', fd);
+}
+// 修改库
+function updateLibrary(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('libraryId', params.libraryId);
+    fd.append('libraryName', params.libraryName);
+    return Axios.post(api + '/user/Tower/updateLibrary', fd);
+}
+// 修改分类
+function updateLibraryCategory(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('categoryId', params.categoryId);
+    fd.append('categoryName', params.categoryName);
+    fd.append('parentCategoryId', params.parentCategoryId);
+    // fd.append('text', params.text);
+    // fd.append('type', params.type);
+    return Axios.post(api + '/user/Tower/updateLibraryCategory', fd);
+}
+// 删除楼号
+function deleteTower(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('towerId', params.towerId);
+    return Axios.post(api + '/user/Tower/deleteTower', fd);
+}
 export default {
     adminLogin: adminLogin,
     phoneLogin: phoneLogin,
@@ -399,4 +523,21 @@ export default {
     updateAdministrative: updateAdministrative,
     deleteAdministrative: deleteAdministrative,
     selectAdministrative: selectAdministrative,
+    addLibrary: addLibrary,
+    addLibraryaddCategory: addLibraryaddCategory,
+    addTower: addTower,
+    selectLibrary: selectLibrary,
+    selectLibraryDetails: selectLibraryDetails,
+
+    selectTower: selectTower,
+    category: category,
+    deleteLibrary: deleteLibrary,
+    deleteLibraryCategory: deleteLibraryCategory,
+    deleteLibraryCategoryText: deleteLibraryCategoryText,
+    deleteTowerLibrary: deleteTowerLibrary,
+    towerLibrary: towerLibrary,
+    towerLibraryCategory: towerLibraryCategory,
+    updateLibrary: updateLibrary,
+    updateLibraryCategory: updateLibraryCategory,
+    deleteTower: deleteTower,
 };

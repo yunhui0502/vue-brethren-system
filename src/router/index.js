@@ -60,6 +60,21 @@ export default new Router({
                     meta: { title: '户型数据管理中心' }
                 },
                 {
+                    path: '/supply-chain',
+                    component: () => import(/* webpackChunkName: "icon" */ '../components/page/supply-chain/supply-chain'),
+                    meta: { title: '供应链库数据管理中心' }
+                },
+                {
+                    path: '/building-center',
+                    component: () => import(/* webpackChunkName: "icon" */ '../components/page/building-center/building-center'),
+                    meta: { title: '楼号数据管理中心' }
+                },
+                {
+                    path: '/library-center',
+                    component: () => import(/* webpackChunkName: "icon" */ '../components/page/library-center/library-center'),
+                    meta: { title: '材料库' }
+                },
+                {
                     path: '/icon',
                     component: () => import(/* webpackChunkName: "icon" */ '../components/page/Icon.vue'),
                     meta: { title: '自定义图标' }

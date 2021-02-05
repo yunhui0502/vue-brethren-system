@@ -18,23 +18,13 @@
                             <span slot="title">{{ item.title }}</span>
                         </template>
                         <template v-for="subItem in item.subs">
-                            <el-submenu
-                                v-if="subItem.subs"
-                                :index="subItem.index"
-                                :key="subItem.index"
-                            >
+                            <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
                                 <template slot="title">{{ subItem.title }}</template>
-                                <el-menu-item
-                                    v-for="(threeItem,i) in subItem.subs"
-                                    :key="i"
-                                    :index="threeItem.index"
-                                >{{ threeItem.title }}</el-menu-item>
+                                <el-menu-item v-for="(threeItem, i) in subItem.subs" :key="i" :index="threeItem.index">{{
+                                    threeItem.title
+                                }}</el-menu-item>
                             </el-submenu>
-                            <el-menu-item
-                                v-else
-                                :index="subItem.index"
-                                :key="subItem.index"
-                            >{{ subItem.title }}</el-menu-item>
+                            <el-menu-item v-else :index="subItem.index" :key="subItem.index">{{ subItem.title }}</el-menu-item>
                         </template>
                     </el-submenu>
                 </template>
@@ -51,6 +41,7 @@
 
 <script>
 import bus from '../common/bus';
+import userApi from '@/service/user.js';
 export default {
     data() {
         return {
@@ -96,11 +87,31 @@ export default {
                     index: 'houses-center',
                     title: '楼盘数据管理中心'
                 },
-                 {
+                {
                     icon: '',
                     index: 'house-type',
                     title: '户型数据管理中心'
                 },
+                {
+                    icon: '',
+                    index: 'building-center',
+                    title: '楼号数据管理中心'
+                },
+                {
+                    icon: '',
+                    index: '3',
+                    title: '供应链库数据管理中心',
+                    subs: [
+                        {
+                            index: 'supply-chain',
+                            title: '仓库管理'
+                        }
+                        // {
+                        //     index: 'library-center',
+                        //     title: '材料库'
+                        // }
+                    ]
+                }
                 // {
                 //     icon: 'el-icon-lx-cascades',
                 //     index: 'table',
@@ -193,9 +204,23 @@ export default {
             return this.$route.path.replace('/', '');
         }
     },
+    mounted() {
+        userApi.selectLibrary((res) => {
+            console.log('主页 查询库', res);
+            console.log(this.items[9].subs);
+            let tableData = res.data.data;
+            tableData.forEach((item) => {
+                let obj = {};
+                // console.log(item)
+                obj.index = 'library-center?id=' + item.id;
+                obj.title = item.libraryName;
+                this.items[9].subs.push(obj);
+            });
+        });
+    },
     created() {
         // 通过 Event Bus 进行组件间通信，来折叠侧边栏
-        bus.$on('collapse', msg => {
+        bus.$on('collapse', (msg) => {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
