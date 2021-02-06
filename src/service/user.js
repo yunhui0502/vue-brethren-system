@@ -143,8 +143,8 @@ async function selectLibrary(handleResult) {
 async function selectLibraryDetails(params, handleResult) {
    user.selectLibraryDetails(params).then((res) => handleResult(res));
 }
-async function selectTower(handleResult) {
-   user.selectTower().then((res) => handleResult(res));
+async function selectTower(params,handleResult) {
+   user.selectTower(params).then((res) => handleResult(res));
 }
 async function category(params, handleResult) {
    user.category(params).then((res) => handleResult(res));
@@ -175,6 +175,9 @@ async function updateLibraryCategory(params, handleResult) {
 }
 async function deleteTower(params, handleResult) {
    user.deleteTower(params).then((res) => handleResult(res));
+}
+async function SelectTowerLibrary(params, handleResult) {
+   user.SelectTowerLibrary(params).then((res) => handleResult(res));
 }
 export default {
    adminLogin: adminLogin,
@@ -235,4 +238,5 @@ export default {
    updateLibrary: updateLibrary,
    updateLibraryCategory: updateLibraryCategory,
    deleteTower: deleteTower,
+   SelectTowerLibrary: SelectTowerLibrary,
 };

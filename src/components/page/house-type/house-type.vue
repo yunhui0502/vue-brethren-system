@@ -22,7 +22,7 @@
                         :value="item.plateId"
                     ></el-option>
                 </el-select>
-                <el-input v-model="query.typeName" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.typeName" placeholder="根据户型名称查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
 
                 <el-button type="primary" style="float: right" @click="editVisible = true">添加户型</el-button>
@@ -497,7 +497,20 @@ export default {
             //     this.tableData = res.list;
             //     this.pageTotal = res.pageTotal || 50;
             // });
-            userApi.selectType({}, (res) => {
+             let Obj = {};
+            if (this.query.adminId != '') {
+                Obj.adminId = this.query.adminId;
+            }
+            if (this.query.plateId != '') {
+                Obj.plateId = this.query.plateId;
+            }
+            if (this.query.projectId != '') {
+                Obj.projectId = this.query.projectId;
+            }
+            if (this.query.typeName != '') {
+                Obj.typeName = this.query.typeName;
+            }
+            userApi.selectType(Obj, (res) => {
                 console.log(res);
                 this.tableData = res.data.data;
                 this.pageTotal = this.tableData.length;

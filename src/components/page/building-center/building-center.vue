@@ -2,9 +2,29 @@
     <!-- ------------------------------------------------楼号数据管理中心---------------------------------------------------------------------------------------- -->
     <div>
         <div class="container">
+           
             <div class="handle-box">
-                <!-- <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input> -->
-                <!-- <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button> -->
+                <el-select v-model="query.adminId" clearable placeholder="请选择区域" class="handle-select mr10">
+                    <el-option v-for="item in administrative" :key="item.id" :label="item.administrativeName" :value="item.id"></el-option>
+                </el-select>
+                <el-select v-model="query.projectId" clearable placeholder="请选择项目" class="handle-select mr10">
+                    <el-option
+                        v-for="item in selectProjectData"
+                        :key="item.projectId"
+                        :label="item.projectName"
+                        :value="item.projectId"
+                    ></el-option>
+                </el-select>
+                <el-select v-model="query.plateId" clearable placeholder="请选择板块" class="handle-select mr10">
+                    <el-option
+                        v-for="item in selectPlateData"
+                        :key="item.plateId"
+                        :label="item.plateName"
+                        :value="item.plateId"
+                    ></el-option>
+                </el-select>
+                <el-input v-model="query.typeName" placeholder="根据楼号查询" class="handle-input mr10"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" style="float: right; margin: 20px" @click="add">添加</el-button>
             </div>
 
@@ -16,8 +36,8 @@
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
-                <!-- <el-table-column prop="towerName" align="center" label="序列号"></el-table-column> -->
-                <el-table-column type="index" align="center" width="80" label="序列号"> </el-table-column>
+                <el-table-column prop="serial" align="center" label="序列号"></el-table-column>
+                <!-- <el-table-column type="index" align="center" width="80" label="序列号"> </el-table-column> -->
                 <el-table-column prop="premisesName" align="center" label="所属楼盘"></el-table-column>
                 <el-table-column prop="towerName" align="center" label="楼号"></el-table-column>
                 <el-table-column prop="address" align="center" label="数据同步楼号"></el-table-column>
@@ -44,17 +64,27 @@
         </div>
         <!-- 添加库数据弹出框 -->
         <el-dialog title="添加库数据" :visible.sync="editVisible2" width="50%" center>
-            <el-form ref="form" :model="form" label-width="120px">
+            <el-form ref="form" :model="form" label-width="140px">
                 <el-form-item label="选择添加数据库">
-                    <div class="material-tock-box">
-                        <!-- <el-checkbox-group v-model="selectLibraryId">
-                            <el-checkbox-button v-for="item in selectLibraryData" :label="item.id" :key="item.id">{{
+                    <div class="material-radio-group">
+                        <el-radio-group v-model="towerForm.libraryIds" size="small">
+                            <el-radio v-for="item in selectLibraryData" :key="item.id" :label="item.id" border>{{
                                 item.libraryName
-                            }}</el-checkbox-button>
-                        </el-checkbox-group> -->
+                            }}</el-radio>
+                        </el-radio-group>
+
+                        <div class="dialog-footer">
+                            <!-- <span slot="footer" > -->
+                            <el-button type="primary" @click="towerLibrary">确 定</el-button>
+                            <!-- </span> -->
+                        </div>
+                    </div>
+                </el-form-item>
+                <el-form-item label="选择添加数据库分类">
+                    <div class="material-tock-box">
                         <div
-                            @click="buttTab(i, item.id)"
-                            v-for="(item, i) in selectLibraryData"
+                            @click="buttTab(i, item.towerLibrarys, item.id)"
+                            v-for="(item, i) in TowerLibraryData"
                             :key="item.id"
                             :class="TabIndex == i ? 'on' : 'material-tock-item'"
                         >
@@ -65,19 +95,16 @@
                     <el-tree
                         :data="routeList"
                         show-checkbox
-                        node-key="id"
+                        node-key="categoryId"
+                        label="categoryId"
                         @check="changePort"
                         :default-expanded-keys="[]"
-                        :default-checked-keys="[]"
+                        :default-checked-keys="checkedKeys"
                         :props="defaultProps2"
                     >
                     </el-tree>
                 </el-form-item>
             </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible2 = false">取 消</el-button>
-                <el-button type="primary" @click="towerLibrary">确 定</el-button>
-            </span>
         </el-dialog>
 
         <!-- 编辑弹出框 -->
@@ -118,10 +145,19 @@ export default {
     name: 'basetable',
     data() {
         return {
+            str:['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+            selectPlateData: [],
+            selectProjectData: [],
+            administrative: [],
+
+            checkedKeys: [],
+            towerId: '',
+
             selectLibraryData: [],
             selectLibraryId: [],
+            TowerLibraryData: [],
 
-            TabIndex: 1,
+            TabIndex: -1,
             routeList: [],
             defaultProps2: {
                 children: 'selectLibraryCategories',
@@ -132,8 +168,10 @@ export default {
             title: '',
             selectPremisesData: '',
             query: {
-                address: '',
-                name: '',
+                adminId: '',
+                plateId: '',
+                projectId: '',
+                typeName: '',
                 pageIndex: 1,
                 pageSize: 10
             },
@@ -145,6 +183,10 @@ export default {
             towerForm: {
                 libraryIds: '',
                 towerId: '1'
+            },
+            categoryForm: {
+                categoryIds: [],
+                towerLibrarys: ''
             },
             tableData: [],
             multipleSelection: [],
@@ -162,18 +204,52 @@ export default {
 
         this.selectLibrary();
         this.selectLibraryDetails();
+
+        this.selectProject();
+        this.selectPlate();
+        this.selectAdministrative();
     },
     methods: {
+        generateMixed(n) {
+            var res = '';
+            for (var i = 0; i < n; i++) {
+                var id = Math.ceil(Math.random() * 26 -1);
+                
+                res += this.str[id];
+            }
+            console.log(res)
+            return res;
+        },
+        selectAdministrative() {
+            userApi.selectAdministrative((res) => {
+                console.log('区域', res);
+                this.administrative = res.data.data;
+            });
+        },
+        selectPlate() {
+            userApi.selectPlate((res) => {
+                console.log('板块', res.data);
+                this.selectPlateData = res.data.data;
+            });
+        },
+        selectProject() {
+            userApi.selectProject({}, (res) => {
+                console.log('项目', res);
+                this.selectProjectData = res.data.data;
+            });
+        },
         towerLibrary() {
+            this.towerForm.towerId = this.towerId;
             // console.log(this.selectLibraryId);
             userApi.towerLibrary(this.towerForm, (res) => {
                 console.log(res);
+                this.SelectTowerLibrary(this.towerId);
             });
         },
         selectLibraryDetails() {
             userApi.selectLibraryDetails({ libraryId: 1 }, (res) => {
                 console.log('查询库详情', res);
-                this.routeList = res.data.data;
+                // this.routeList = res.data.data;
             });
         },
         selectLibrary() {
@@ -186,15 +262,67 @@ export default {
             console.log(index);
             console.log(row);
             this.editVisible2 = true;
+            this.towerId = row.towerId;
+            this.SelectTowerLibrary(row.towerId);
         },
-        buttTab(e, towerId) {
+        SelectTowerLibrary(id) {
+            console.log(id);
+            userApi.SelectTowerLibrary({ towerId: id }, (res) => {
+                console.log('查询楼号下的库', res);
+                this.TowerLibraryData = res.data.data;
+            });
+        },
+        buttTab(e, towerLibrarys, id) {
             this.TabIndex = e;
-            this.towerForm.libraryIds = towerId;
+            this.categoryForm.towerLibrarys = towerLibrarys;
+            (this.checkedKeys = []),
+                userApi.selectLibraryDetails({ towerId: this.towerId, libraryId: id }, (res) => {
+                    console.log('查询库仓详情', res);
+                    this.routeList = res.data.data;
+                    this.routeList.forEach((item) => {
+                        //判断该行是否有子节点
+                        if (item.pitch == 0) {
+                            this.checkedKeys.push(item.categoryId);
+                        }
+                        if ('selectLibraryCategories' in item) {
+                            //遍历子节点
+                            item.selectLibraryCategories.forEach((item2) => {
+                                //判断该节点是否为我点击的节点
+                                if (item2.pitch == 0) {
+                                    this.checkedKeys.push(item2.categoryId);
+                                }
+                                // console.log('item2', item2);
+                                if (item2.selectLibraryCategories.length > 0) {
+                                    //遍历子节点
+                                    item2.selectLibraryCategories.forEach((item3) => {
+                                        if (item3.pitch == 0) {
+                                            this.checkedKeys.push(item3.categoryId);
+                                        }
+                                        if (item3.selectLibraryCategories.length > 0) {
+                                            //遍历子节点
+                                            item3.selectLibraryCategories.forEach((item4) => {
+                                                //判断该节点是否为我点击的节点
+                                                if (item4.pitch == 0) {
+                                                    this.checkedKeys.push(item4.categoryId);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
         },
         // 点击复选框执行
         changePort(data, e) {
             console.log('changePort', data);
             console.log(e);
+            this.categoryForm.categoryIds = e.checkedKeys;
+            console.log(this.categoryForm);
+            userApi.towerLibraryCategory(this.categoryForm, (res) => {
+                this.$message.success(`添加成功`);
+            });
         },
         renderContent(h, { node, data, store }) {
             // 树节点的内容区的渲染 Function
@@ -253,10 +381,26 @@ export default {
             //     this.tableData = res.list;
             //     this.pageTotal = res.pageTotal || 50;
             // });
-            userApi.selectTower((res) => {
+            let Obj = {};
+            if (this.query.adminId != '') {
+                Obj.adminId = this.query.adminId;
+            }
+            if (this.query.plateId != '') {
+                Obj.plateId = this.query.plateId;
+            }
+            if (this.query.projectId != '') {
+                Obj.projectId = this.query.projectId;
+            }
+            if (this.query.typeName != '') {
+                Obj.typeName = this.query.typeName;
+            }
+            userApi.selectTower(Obj, (res) => {
                 console.log('查询', res);
                 this.tableData = res.data.data;
                 this.pageTotal = this.tableData.length;
+                this.tableData.forEach((item) => {
+                    item.serial = this.generateMixed(6) + '-' + item.towerName
+                })
             });
         },
         // 添加
@@ -333,6 +477,15 @@ export default {
 </script>
 
 <style  lang="less" scoped>
+.material-radio-group {
+    padding: 8px;
+    border: 1px solid #ccc;
+    .dialog-footer {
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 30px;
+    }
+}
 .material-tock-box {
     padding: 8px;
     border: 1px solid #ccc;

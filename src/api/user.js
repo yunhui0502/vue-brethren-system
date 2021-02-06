@@ -379,7 +379,7 @@ function addLibraryaddCategory(params) {
     if(params.text != undefined) {
         fd.append('type', params.type);
     }
-    // return Axios.post(api + '/user/Tower/addLibraryaddCategory', fd);
+    return Axios.post(api + '/user/Tower/addLibraryaddCategory', fd);
 }
 // 新建楼号
 function addTower(params) {
@@ -399,8 +399,8 @@ function selectLibraryDetails(params) {
     return Axios.get(api + '/user/Tower/selectLibraryDetails', { params });
 }
 // 查询
-function selectTower() {
-    return Axios.get(api + '/user/Tower/selectTower');
+function selectTower(params) {
+    return Axios.get(api + '/user/Tower/selectTower', { params });
 }
 // 查找最低分类
 function category(params) {
@@ -470,8 +470,13 @@ function updateLibraryCategory(params) {
     fd.append('categoryId', params.categoryId);
     fd.append('categoryName', params.categoryName);
     fd.append('parentCategoryId', params.parentCategoryId);
-    // fd.append('text', params.text);
-    // fd.append('type', params.type);
+    if(params.text != undefined) {
+        console.log('111')
+        fd.append('text', params.text);
+    }
+    if(params.text != undefined) {
+        fd.append('type', params.type);
+    }
     return Axios.post(api + '/user/Tower/updateLibraryCategory', fd);
 }
 // 删除楼号
@@ -480,6 +485,13 @@ function deleteTower(params) {
     console.log(params);
     fd.append('towerId', params.towerId);
     return Axios.post(api + '/user/Tower/deleteTower', fd);
+}
+// 查询楼号的库
+function SelectTowerLibrary(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('towerId', params.towerId);
+    return Axios.post(api + '/user/Tower/SelectTowerLibrary', fd);
 }
 export default {
     adminLogin: adminLogin,
@@ -540,4 +552,6 @@ export default {
     updateLibrary: updateLibrary,
     updateLibraryCategory: updateLibraryCategory,
     deleteTower: deleteTower,
+    SelectTowerLibrary: SelectTowerLibrary,
+    
 };

@@ -22,7 +22,7 @@
                         :value="item.plateId"
                     ></el-option>
                 </el-select>
-                <el-input v-model="query.landName" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.landName" placeholder="根据土地名称查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" style="float: right" @click="editVisible = true">添加土地</el-button>
             </div>

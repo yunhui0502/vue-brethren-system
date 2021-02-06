@@ -22,7 +22,7 @@
                         :value="item.plateId"
                     ></el-option>
                 </el-select>
-                <el-input v-model="query.premisesName" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.premisesName" placeholder="根据楼盘名称查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" style="float: right" @click="editVisible = true">添加楼盘</el-button>
             </div>

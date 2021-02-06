@@ -3,7 +3,7 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.name" placeholder="根据项目名称查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" style="float: right; margin: 20px" @click="add">添加</el-button>
             </div>

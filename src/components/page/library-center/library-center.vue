@@ -3,14 +3,14 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <!-- <el-input v-model="query.name" placeholder="根据材料库查询" class="handle-input mr10"></el-input> -->
+                <!-- <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button> -->
                 <el-button type="primary" style="float: right; margin: 20px" @click="add">添加</el-button>
             </div>
 
             <!-- <pdf src="../../../assets/ces.pdf"></pdf> -->
             <!-- <a href="http://39.98.126.20:7004/user/File/getFile?id=59">pdf</a> -->
-
+            <!-- <div @click="Onpreview">44444</div> -->
             <el-table
                 :data="tableData.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize)"
                 class="table"
@@ -69,19 +69,21 @@
                         clearable
                     ></el-cascader>
                 </el-form-item>
-                <el-form-item v-if="title != '编辑'" label="类目文件">
+                <el-form-item v-if="form.isAddText == 0" label="类目文件">
                     <el-upload
                         class="upload-demo"
                         :action="action"
                         :on-change="handleChange"
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeUpload"
+                        :on-preview="Onpreview"
+                        list-type="picture"
                         :file-list="fileList"
                     >
                         <el-button size="small" type="primary">上传pdf/CAD文件</el-button>
                     </el-upload>
                 </el-form-item>
-                <el-form-item v-if="title != '编辑'" label="类目详情">
+                <el-form-item v-if="form.isAddText == 0" label="类目详情">
                     <tinymce @fatherMethod="fatherMethod" style="margin: 10px" ref="blc" :id="'tinymceBzlc'"></tinymce>
                 </el-form-item>
             </el-form>
@@ -105,6 +107,7 @@ export default {
         return {
             action: 'http://39.98.126.20:7004/user/File/fileUpLoadFile',
             fileList: [],
+
             title: '',
             selectPremisesData: '',
             query: {
@@ -114,6 +117,7 @@ export default {
                 pageSize: 10
             },
             form: {
+                isAddText: 0,
                 categoryName: '', // 类名称
                 libraryId: '1', // 库id
                 parentCategoryId: '0', // 上级类目id 顶级传0
@@ -129,13 +133,26 @@ export default {
             id: -1
         };
     },
+    watch: {
+        // 监听路由变化，路由变化的时候请求页面数据
+        $route: function () {
+            console.log('刷新');
+            this.getData();
+            this.selectPremises();
+        }
+    },
     created() {
         // console.log()
         this.getData();
         this.selectPremises();
-        this.form.libraryId = this.$route.query.id
+        this.form.libraryId = this.$route.query.id;
     },
     methods: {
+        Onpreview(e) {
+            // console.log(e.response.data);
+
+            window.open(e.response.data);
+        },
         change(e) {
             console.log(e);
             let i = e.length - 1;
@@ -148,10 +165,11 @@ export default {
         handleAvatarSuccess(res, file) {
             // this.imageUrl = URL.createObjectURL(file.raw);
             console.log(res);
-            // this.form.houseFiles.push(res.data);
+            this.form.text = res.data;
         },
         handleChange(file, fileList) {
             this.fileList = fileList.slice(-3);
+            // this.fileList = []
         },
         beforeUpload(file) {
             if (file.size / 1024 / 1024 > 1) {
@@ -184,6 +202,7 @@ export default {
         add() {
             this.title = '添加';
             this.editVisible = true;
+            this.form.isAddText = 0;
         },
         // 获取 easy-mock 的模拟数据
         getData() {
@@ -201,6 +220,16 @@ export default {
         // 添加
         saveEdit() {
             if (this.title == '编辑') {
+                if (this.form.type == 'text') {
+                    this.form.text = this.$refs.blc.release();
+                }
+                if (this.form.text == '') {
+                    this.form = {
+                        categoryName: this.form.categoryName,
+                        libraryId: this.form.libraryId,
+                        parentCategoryId: this.form.parentCategoryId
+                    };
+                }
                 userApi.updateLibraryCategory(this.form, (res) => {
                     console.log('编辑', res);
                     this.$message.success('编辑成功');
@@ -303,7 +332,7 @@ export default {
                             item2.selectLibraryCategories.forEach((item3) => {
                                 //判断该节点是否为我点击的节点
                                 if (item3 == row) {
-                                    console.log(item2); //输出父节点
+                                    // console.log(item2); //输出父节点
                                     this.form.parentCategoryId = item2.categoryId;
                                 }
                                 if (item3.selectLibraryCategories.length > 0) {
@@ -311,7 +340,7 @@ export default {
                                     item3.selectLibraryCategories.forEach((item4) => {
                                         //判断该节点是否为我点击的节点
                                         if (item4 == row) {
-                                            console.log(item3); //输出父节点
+                                            // console.log(item3); //输出父节点
                                             this.form.parentCategoryId = item3.categoryId;
                                         }
                                     });
@@ -322,12 +351,32 @@ export default {
                 }
             });
             console.log(row);
+            console.log(row.type);
             this.idx = index;
             this.title = '编辑';
             this.form.categoryName = row.categoryName;
             this.form.categoryId = row.categoryId;
+            this.form.isAddText = row.isAddText;
             this.editVisible = true;
             console.log(this.form.parentCategoryId);
+            this.fileList = [];
+            setTimeout(() => {
+                this.$refs.blc.setData('');
+            }, 10);
+            if (row.type != undefined) {
+                if (row.type == 'TEXT') {
+                    setTimeout(() => {
+                        this.$refs.blc.setData(row.text);
+                    }, 10);
+                }
+                if (row.type == 'PDF') {
+                    let obj = {
+                        name: row.type,
+                        url: row.text
+                    };
+                    this.fileList.push(obj);
+                }
+            }
         },
         // 分页导航
         handlePageChange(val) {
@@ -346,7 +395,14 @@ export default {
     text-align: center;
     margin-bottom: 20px;
 }
-
+/deep/.el-upload-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+/deep/.el-upload-list__item {
+    width: 26%;
+    margin: 8px;
+}
 /deep/.el-upload--text {
     border: 0px dashed #d9d9d9;
     width: 140px;
