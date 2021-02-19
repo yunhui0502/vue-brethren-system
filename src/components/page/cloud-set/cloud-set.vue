@@ -17,7 +17,7 @@
             <div v-if="tabIndex == 1">
                 <el-table
                     align="center"
-                    :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
+                    :data="tableData.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize)"
                     border
                     class="table"
                     ref="multipleTable"
@@ -93,22 +93,22 @@
             </div>
         </div>
 
-        <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="账号">
+        <!-- 添加弹出框 -->
+        <el-dialog title="添加" :visible.sync="editVisible" width="30%">
+            <el-form ref="form" :rules="rules" :model="form" label-width="70px">
+                <el-form-item label="账号" prop="userName">
                     <el-input v-model="form.userName"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
+                <el-form-item label="密码" prop="password">
                     <el-input v-model="form.password"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号">
+                <el-form-item label="手机号" prop="phone">
                     <el-input v-model="form.phone"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -120,7 +120,27 @@ import userApi from '@/service/user.js';
 export default {
     name: 'basetable',
     data() {
+        // 验证手机号的校验规则
+        let checkMobile = (rule, value, callback) => {
+            // 验证手机号的正则表达式
+            const regMobile = /^1(3|4|5|6|7|8|9)\d{9}$/;
+
+            if (regMobile.test(value)) {
+                // 合法的手机号
+                return callback();
+            }
+            // 不合法
+            callback(new Error('请输入合法的手机号'));
+        };
         return {
+            rules: {
+                phone: [
+                    { message: '请输入手机号', trigger: 'blur' },
+                    { validator: checkMobile, trigger: 'blur' }
+                ],
+                password: [{ required: true, message: '密码', trigger: 'blur' }],
+                userName: [{ required: true, message: '请输入账号', trigger: 'change' }]
+            },
             // -----------------------------------
             tabIndex: 1,
             fileList: [],
@@ -156,12 +176,21 @@ export default {
     },
     methods: {
         // 保存编辑
-        saveEdit() {
-            // console.log(this.form)
-            userApi.addLogin(this.form, (res) => {
-                console.log(res);
-                this.$message.success(`添加成功`);
-                this.editVisible = false;
+        saveEdit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    console.log(this.form);
+                    userApi.addLogin(this.form, (res) => {
+                        console.log(res);
+                        this.$message.success(`添加成功`);
+                        this.editVisible = false;
+                        this.$refs[form].resetFields();
+                    });
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
+                }
             });
         },
         onSubmit() {

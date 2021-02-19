@@ -129,6 +129,7 @@ export default {
         this.getData();
         // this.selectPremises();
     },
+
     methods: {
         examine(row) {
             this.editVisible2 = true;
@@ -137,7 +138,6 @@ export default {
                 this.selectPremisesData = res.data.data;
             });
         },
-
         developers() {
             this.tableData.forEach((item) => {
                 item.developers = [];
@@ -147,6 +147,7 @@ export default {
                     data.forEach((item2) => {
                         item.developers.push(item2.developersName);
                     });
+                    console.log(this.tableData)
                 });
             });
         },

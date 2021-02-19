@@ -50,8 +50,8 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog :title="title" class="abow_dialog" :visible.sync="editVisible" width="65%" center>
-            <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="类目名称">
+            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+                <el-form-item label="类目名称" prop="categoryName">
                     <el-input class="el-input-item" v-model="form.categoryName"></el-input>
                 </el-form-item>
                 <el-form-item label="上级类目">
@@ -89,7 +89,7 @@
             </el-form>
             <div class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -105,6 +105,9 @@ export default {
     components: { tinymce, pdf },
     data() {
         return {
+            rules: {
+                categoryName: [{ required: true, message: '请输入类目名称', trigger: 'blur' }]
+            },
             action: 'http://39.98.126.20:7004/user/File/fileUpLoadFile',
             fileList: [],
 
@@ -218,64 +221,75 @@ export default {
             });
         },
         // 添加
-        saveEdit() {
-            if (this.title == '编辑') {
-                if (this.form.type == 'text') {
-                    this.form.text = this.$refs.blc.release();
+        saveEdit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    if (this.title == '编辑') {
+                            console.log(this.form.text);
+                            if (this.form.type == 'text') {
+                                this.form.text = this.$refs.blc.release();
+                            }
+                        if (this.form.text == '') {
+                            this.form = {
+                                categoryId: this.form.categoryId,
+                                categoryName: this.form.categoryName,
+                                libraryId: this.form.libraryId,
+                                parentCategoryId: this.form.parentCategoryId
+                            };
+                        }
+                        userApi.updateLibraryCategory(this.form, (res) => {
+                            console.log('编辑', res);
+                            this.$message.success('编辑成功');
+                            this.editVisible = false;
+                            this.form = {
+                                categoryName: '', // 类名称
+                                libraryId: '1', // 库id
+                                parentCategoryId: '0', // 上级类目id 顶级传0
+                                text: '', // 文本或者图片
+                                type: 'text' // 文本或者图片类型
+                            };
+                            (this.fileList = []), this.getData();
+                            setTimeout(() => {
+                                this.$refs.blc.setData('');
+                            }, 10);
+                        });
+                    } else {
+                        if (this.form.type == 'text') {
+                            this.form.text = this.$refs.blc.release();
+                        }
+                        if (this.form.text == '') {
+                            this.form = {
+                                categoryName: this.form.categoryName,
+                                libraryId: this.form.libraryId,
+                                parentCategoryId: this.form.parentCategoryId
+                            };
+                        }
+                        console.log(this.form);
+                        // console.log(richText);
+                        userApi.addLibraryaddCategory(this.form, (res) => {
+                            console.log('添加', res);
+                            this.$message.success('添加成功');
+                            this.editVisible = false;
+                            this.form = {
+                                categoryName: '', // 类名称
+                                libraryId: '1', // 库id
+                                parentCategoryId: '0', // 上级类目id 顶级传0
+                                text: '', // 文本或者图片
+                                type: 'text' // 文本或者图片类型
+                            };
+                            setTimeout(() => {
+                                this.$refs.blc.setData('');
+                            }, 10)((this.fileList = [])),
+                                this.getData();
+                        });
+                    }
+                    this.$refs[form].resetFields();
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
                 }
-                if (this.form.text == '') {
-                    this.form = {
-                        categoryName: this.form.categoryName,
-                        libraryId: this.form.libraryId,
-                        parentCategoryId: this.form.parentCategoryId
-                    };
-                }
-                userApi.updateLibraryCategory(this.form, (res) => {
-                    console.log('编辑', res);
-                    this.$message.success('编辑成功');
-                    this.editVisible = false;
-                    this.form = {
-                        categoryName: '', // 类名称
-                        libraryId: '1', // 库id
-                        parentCategoryId: '0', // 上级类目id 顶级传0
-                        text: '', // 文本或者图片
-                        type: 'text' // 文本或者图片类型
-                    };
-                    setTimeout(() => {
-                        this.$refs.blc.setData('');
-                    }, 10);
-                    (this.fileList = []), this.getData();
-                });
-            } else {
-                if (this.form.type == 'text') {
-                    this.form.text = this.$refs.blc.release();
-                }
-                if (this.form.text == '') {
-                    this.form = {
-                        categoryName: this.form.categoryName,
-                        libraryId: this.form.libraryId,
-                        parentCategoryId: this.form.parentCategoryId
-                    };
-                }
-                console.log(this.form);
-                // console.log(richText);
-                userApi.addLibraryaddCategory(this.form, (res) => {
-                    console.log('添加', res);
-                    this.$message.success('添加成功');
-                    this.editVisible = false;
-                    this.form = {
-                        categoryName: '', // 类名称
-                        libraryId: '1', // 库id
-                        parentCategoryId: '0', // 上级类目id 顶级传0
-                        text: '', // 文本或者图片
-                        type: 'text' // 文本或者图片类型
-                    };
-                    setTimeout(() => {
-                        this.$refs.blc.setData('');
-                    }, 10)((this.fileList = [])),
-                        this.getData();
-                });
-            }
+            });
         },
         // 触发搜索按钮
         handleSearch() {
@@ -363,6 +377,9 @@ export default {
             setTimeout(() => {
                 this.$refs.blc.setData('');
             }, 10);
+            if (row.type == undefined) {
+                this.form.type = undefined
+            }
             if (row.type != undefined) {
                 if (row.type == 'TEXT') {
                     setTimeout(() => {

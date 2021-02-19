@@ -10,7 +10,7 @@
                 </el-select>
             </div>
             <el-table
-                :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
+                :data="tableData.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize)"
                 border
                 class="table"
                 ref="multipleTable"
@@ -53,23 +53,23 @@
 
         <!-- 添加区域 -->
         <el-dialog title="添加" :visible.sync="dialogFormVisible" width="20%">
-            <el-form :model="countForm">
-                <el-form-item label="属性名称">
+            <el-form ref="countForm" :rules="countFormRules" :model="countForm">
+                <el-form-item label="属性名称" prop="name">
                     <el-input v-model="countForm.name"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addroom">确 定</el-button>
+                <el-button type="primary" @click="addroom('countForm')">确 定</el-button>
             </div>
         </el-dialog>
         <!-- 添加弹出框 -->
         <el-dialog title="添加" :visible.sync="editVisible" width="40%">
-            <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="板块名称">
+            <el-form ref="form" :rules="rules" :model="form" label-width="130px">
+                <el-form-item label="板块名称" prop="plateName">
                     <el-input v-model="form.plateName"></el-input>
                 </el-form-item>
-                <el-form-item label="所属行政区">
+                <el-form-item label="所属行政区" prop="administrativeId">
                     <el-select v-model="form.administrativeId" placeholder="请选择">
                         <el-option v-for="item in options" :key="item.id" :label="item.administrativeName" :value="item.id"> </el-option>
                         <!-- <el-option key="bbk" label="步步高" value="1"></el-option>
@@ -77,15 +77,15 @@
                         <el-option key="imoo" label="imoo" value="3"></el-option> -->
                     </el-select>
                 </el-form-item>
-                <el-form-item label="板块地址">
+                <el-form-item label="板块地址" prop="plateAddress">
                     <el-input v-model="form.plateAddress"></el-input>
                 </el-form-item>
-                <el-form-item label="区域定位">
+                <el-form-item label="区域定位" prop="plateLabelId">
                     <el-checkbox-group v-model="form.plateLabelId">
                         <el-checkbox :label="item.id" v-for="item in areaData" :key="item.id" name="type">{{ item.labelName }}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
-                <el-form-item label="区域优势">
+                <el-form-item label="区域优势" prop="advantage">
                     <el-input type="textarea" rows="5" v-model="form.advantage"></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="供应套数">
@@ -103,30 +103,30 @@
                 <!-- <el-form-item label="容积率">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item> -->
-                <el-form-item label="置业均价">
+                <el-form-item label="置业均价" prop="averagePrice">
                     <el-input v-model="form.averagePrice"></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="楼盘均价">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item> -->
-                <el-form-item label="区域发展信息">
+                <el-form-item label="区域发展信息" prop="developMessage">
                     <el-input type="textarea" rows="5" v-model="form.developMessage"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">表单提交</el-button>
+                    <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
                     <el-button @click="editVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible2" width="40%">
-            <el-form ref="form" :model="form2" label-width="100px">
+            <el-form ref="form" :model="form2" label-width="130px">
                 <el-form-item label="板块名称">
                     <el-input v-model="form2.plateName"></el-input>
                 </el-form-item>
                 <el-form-item label="所属行政区">
                     <el-select v-model="form2.administrativeId" placeholder="请选择">
-                        <el-option key="bbk" label="步步高" value="1"></el-option>
+                        <el-option v-for="item in options" :key="item.id" :label="item.administrativeName" :value="item.id"> </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="板块地址">
@@ -170,7 +170,6 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
-
     </div>
 </template>
 
@@ -182,7 +181,19 @@ export default {
     name: 'basetable',
     data() {
         return {
-            value:'',
+            rules: {
+                plateName: [{ required: true, message: '请输入板块名称', trigger: 'blur' }],
+                plateAddress: [{ required: true, message: '请输入板块地址名称', trigger: 'change' }],
+                advantage: [{ required: true, message: '请输入区域优势', trigger: 'change' }],
+                averagePrice: [{ required: true, message: '请输入置业均价', trigger: 'change' }],
+                developMessage: [{ required: true, message: '请输入区域发展信息', trigger: 'change' }],
+                administrativeId: [{ required: true, message: '请选择所属行政区', trigger: 'change' }],
+                plateLabelId: [{ type: 'array', required: true, message: '请至少选择一个区域定位', trigger: 'change' }]
+            },
+            countFormRules: {
+                name: [{ required: true, message: '请输入板块名称', trigger: 'blur' }]
+            },
+            value: '',
             options: [],
             dialogFormVisible: false,
             editVisible: false,
@@ -233,17 +244,27 @@ export default {
         this.selectAdministrative();
     },
     methods: {
-         selectAdministrative() {
+        selectAdministrative() {
             userApi.selectAdministrative((res) => {
-                console.log('区域',res);
+                console.log('区域', res);
                 this.options = res.data.data;
             });
         },
-        addroom() {
-            userApi.addAdministrative(this.countForm, (res) => {
-                console.log(res);
-                this.$message.success('提交成功！');
-                this.dialogFormVisible = false;
+        addroom(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    console.log(this.form);
+                    userApi.addAdministrative(this.countForm, (res) => {
+                        console.log(res);
+                        this.$message.success('提交成功！');
+                        this.$refs[form].resetFields();
+                        this.dialogFormVisible = false;
+                    });
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
+                }
             });
         },
         // 编辑
@@ -254,10 +275,18 @@ export default {
         },
         // 添加操作
         handleEdit(index, row) {
-            // this.idx = index;
+            // this.idx = index; plateLabelId
             console.log(row);
             this.form2.administrativeId = row.administrativeId;
             this.form2.advantage = row.advantage;
+
+            this.form2.plateLabelId = [];
+            for (let key in row.label) {
+                console.log(key);
+                this.form2.plateLabelId.push(Number(key));
+            }
+            console.log(this.form2.plateLabelId);
+
             this.form2.averagePrice = row.averagePrice;
             this.form2.developMessage = row.developMessage;
             this.form2.plateAddress = row.address;
@@ -286,19 +315,29 @@ export default {
                 })
                 .catch(() => {});
         },
-        onSubmit() {
-            console.log(this.form);
-            userApi.addPlate(this.form,(res) => {
-                 console.log(res)
-                this.$message.success('提交成功!');
-                this.editVisible = false;
+        onSubmit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    console.log(this.form);
+                    userApi.addPlate(this.form, (res) => {
+                        console.log(res);
+                        this.$message.success('提交成功!');
+                        this.editVisible = false;
+                        this.$refs[form].resetFields();
+                        this.selectPlate()
+                    });
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
+                }
             });
         },
         selectPlate() {
             userApi.selectPlate((res) => {
                 console.log(res.data);
                 this.tableData = res.data.data;
-                 this.pageTotal = this.tableData.length;
+                this.pageTotal = this.tableData.length;
                 this.tableData.forEach((item) => {
                     // item.averagePrice = (item.averagePrice / 100).toFixed(2);
                 });

@@ -71,11 +71,11 @@
 
         <!-- 添加弹出框 -->
         <el-dialog title="添加" :visible.sync="editVisible" width="40%">
-            <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="楼盘名称">
+            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+                <el-form-item label="楼盘名称" prop="premisesName">
                     <el-input v-model="form.premisesName"></el-input>
                 </el-form-item>
-                <el-form-item label="所属土地">
+                <el-form-item label="所属土地" prop="landId">
                     <el-select v-model="form.landId" placeholder="请选择">
                         <el-option
                             v-for="item in selectLandData"
@@ -145,41 +145,41 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item label="产品类型">
+                <el-form-item label="产品类型" prop="plateLabelId">
                     <el-checkbox-group v-model="form.plateLabelId">
                         <el-checkbox v-for="(item, i) in productData" :key="i" :label="item.id" :value="item.id">{{
                             item.labelName
                         }}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
-                <el-form-item label="价格">
+                <el-form-item label="价格" prop="price">
                     <el-input v-model="form.price"></el-input>
                 </el-form-item>
-                <el-form-item label="用地面积">
+                <el-form-item label="用地面积" prop="siteArea">
                     <el-input @blur="blurSite('form')" v-model="form.siteArea"></el-input>
                 </el-form-item>
-                <el-form-item label="建筑面积">
+                <el-form-item label="建筑面积" prop="architectureArea">
                     <el-input @blur="blurArchitecture('form')" v-model="form.architectureArea"></el-input>
                 </el-form-item>
-                <el-form-item label="容积率">
+                <el-form-item label="容积率" prop="plotRatio">
                     <el-input :disabled="true" v-model="form.plotRatio"></el-input>
                 </el-form-item>
-                <el-form-item label="成交日期">
+                <el-form-item label="成交日期" prop="openingTime">
                     <el-date-picker v-model="form.openingTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="开发商">
+                <el-form-item label="开发商" prop="developersName">
                     <el-input v-model="form.developersName"></el-input>
                 </el-form-item>
-                <el-form-item label="总户数">
+                <el-form-item label="总户数" prop="households">
                     <el-input v-model="form.households"></el-input>
                 </el-form-item>
-                <el-form-item label="物业管理">
+                <el-form-item label="物业管理" prop="propertyName">
                     <el-input v-model="form.propertyName"></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">表单提交</el-button>
+                    <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
@@ -310,6 +310,19 @@ export default {
     name: 'basetable',
     data() {
         return {
+            rules: {
+                premisesName: [{ required: true, message: '请输入楼盘名称', trigger: 'blur' }],
+                plateLabelId: [{ required: true, message: '请选择产品标签', trigger: 'blur' }],
+                price: [{ required: true, message: '请输入价格', trigger: 'blur' }],
+                siteArea: [{ required: true, message: '请输入用地面积', trigger: 'blur' }],
+                openingTime: [{ required: true, message: '请选择成交日期', trigger: 'change' }],
+                developersName: [{ required: true, message: '请输入开发商名称', trigger: 'blur' }],
+                households: [{ required: true, message: '请输入总户数', trigger: 'blur' }],
+                propertyName: [{ required: true, message: '请输入物业名称', trigger: 'blur' }],
+                landId: [{ required: true, message: '请选择所属土地', trigger: 'change' }],
+                architectureArea: [{ required: true, message: '请输入建筑面积', trigger: 'blur' }]
+            },
+
             selectPlateData: [],
             selectProjectData: [],
             administrative: [],
@@ -358,7 +371,7 @@ export default {
                 houseFacadePicture: [], // 楼盘立面
                 houseSunPicture: [], // 楼盘总图
                 households: '', // 总户数
-                landId: '1', // 土地id
+                landId: '', // 土地id
                 plateLabelId: [], // 产品类型
                 openingTime: '', // 营业时间
                 plotRatio: '', // 容积率
@@ -399,34 +412,32 @@ export default {
         this.selectAdministrative();
     },
     methods: {
-        blurSite (e){
+        blurSite(e) {
             // form.siteArea
-            if(this.form.architectureArea == ''){
-                console.log('空')
-                return
+            if (this.form.architectureArea == '') {
+                console.log('空');
+                return;
             }
-             if(e == 'form') {
-                console.log('form')
-                this.form.plotRatio = this.form.architectureArea / this.form.siteArea
+            if (e == 'form') {
+                console.log('form');
+                this.form.plotRatio = this.form.architectureArea / this.form.siteArea;
             } else {
-                console.log('form2')
-                this.form2.plotRatio = this.form2.architectureArea / this.form2.siteArea
+                console.log('form2');
+                this.form2.plotRatio = this.form2.architectureArea / this.form2.siteArea;
             }
-          
         },
-        blurArchitecture (e){
-             if(this.form.siteArea == ''){
-                console.log('空')
-                return
+        blurArchitecture(e) {
+            if (this.form.siteArea == '') {
+                console.log('空');
+                return;
             }
-            if(e == 'form') {
-                console.log('form')
-                this.form.plotRatio = this.form.architectureArea / this.form.siteArea
+            if (e == 'form') {
+                console.log('form');
+                this.form.plotRatio = this.form.architectureArea / this.form.siteArea;
             } else {
-                console.log('form2')
-                this.form2.plotRatio = this.form2.architectureArea / this.form2.siteArea
+                console.log('form2');
+                this.form2.plotRatio = this.form2.architectureArea / this.form2.siteArea;
             }
-            
         },
         selectAdministrative() {
             userApi.selectAdministrative((res) => {
@@ -514,14 +525,23 @@ export default {
             return this.$confirm(`确定移除 ${file.name}？`);
         },
         // ------------------------------------------------------------------
-        onSubmit() {
-            console.log(this.form);
-            // this.form.openingTime = this.form.openingTime + ' ' + '00:00:00';
-            userApi.addPremises(this.form, (res) => {
-                console.log(res);
-                this.$message.success('提交成功！');
-                this.editVisible = false;
-                this.getData();
+        onSubmit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    console.log(this.form);
+                    // this.form.openingTime = this.form.openingTime + ' ' + '00:00:00';
+                    userApi.addPremises(this.form, (res) => {
+                        console.log(res);
+                        this.$message.success('提交成功！');
+                        this.editVisible = false;
+                        this.getData();
+                        this.$refs[form].resetFields();
+                    });
+                } else {
+                    console.log('error submit!!');
+
+                    return false;
+                }
             });
         },
         onSubmit2() {

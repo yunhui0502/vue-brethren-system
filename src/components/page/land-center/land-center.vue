@@ -27,7 +27,7 @@
                 <el-button type="primary" style="float: right" @click="editVisible = true">添加土地</el-button>
             </div>
             <el-table
-                :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
+                :data="tableData.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize)"
                 border
                 class="table"
                 ref="multipleTable"
@@ -40,7 +40,6 @@
                 <el-table-column align="center" prop="plateName" label="所属板块"></el-table-column>
                 <el-table-column align="center" prop="architectureArea" label="容积率"></el-table-column>
                 <el-table-column align="center" prop="transactionPrice" label="成交价格(亿元)"></el-table-column>
-                <!-- <el-table-column align="center" prop="date" label="楼面价(元/㎡)"></el-table-column> -->
                 <el-table-column align="center" prop="transfer" label="受让方"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
@@ -65,11 +64,11 @@
 
         <!-- 添加弹出框 -->
         <el-dialog title="添加" :visible.sync="editVisible" width="40%">
-            <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="土地名称">
+            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+                <el-form-item label="土地名称" prop="landName">
                     <el-input v-model="form.landName"></el-input>
                 </el-form-item>
-                <el-form-item label="所属项目">
+                <el-form-item label="所属项目" prop="projectId">
                     <el-select v-model="form.projectId" placeholder="请选择">
                         <el-option
                             v-for="item in selectProjectData"
@@ -79,20 +78,10 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="土地地址">
+                <el-form-item label="土地地址" prop="landAddress">
                     <el-input v-model="form.landAddress"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="所属区域">
-                    <el-select v-model="form.administrativeName" placeholder="请选择区域" class="handle-select mr10">
-                        <el-option
-                            v-for="item in administrative"
-                            :key="item.id"
-                            :label="item.administrativeName"
-                            :value="item.administrativeName"
-                        ></el-option>
-                    </el-select>
-                </el-form-item> -->
-                <el-form-item label="所属板块">
+                <el-form-item label="所属板块" prop="plateId">
                     <el-select v-model="form.plateId" placeholder="请选择">
                         <el-option
                             v-for="item in selectPlateData"
@@ -103,45 +92,45 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="用地面积">
-                    <el-input v-model="form.name2"></el-input>
+                    <el-input :disabled="true" v-model="form.name2"></el-input>
                 </el-form-item>
 
                 <el-form-item label="容积率">
-                    <el-input v-model="form.name2"></el-input>
+                    <el-input :disabled="true" v-model="form.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="建筑面积">
-                    <el-input v-model="form.name2"></el-input>
+                    <el-input :disabled="true" v-model="form.name2"></el-input>
                 </el-form-item>
-                <el-form-item label="建筑密度">
+                <el-form-item label="建筑密度" prop="density">
                     <el-input v-model="form.density"></el-input>
                 </el-form-item>
-                <el-form-item label="成交日期">
+                <el-form-item label="成交日期" prop="succeedTime">
                     <el-date-picker v-model="form.succeedTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="成交价">
-                    <el-input v-model="form.transactionPrice"></el-input>
+                <el-form-item label="成交价" prop="transactionPrice">
+                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form.transactionPrice"></el-input>
                 </el-form-item>
-                <el-form-item label="起拍价">
-                    <el-input v-model="form.startingPrice"></el-input>
+                <el-form-item label="起拍价" prop="startingPrice">
+                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form.startingPrice"></el-input>
                 </el-form-item>
-                <el-form-item label="受让方">
+                <el-form-item label="受让方" prop="transfer">
                     <el-input v-model="form.transfer"></el-input>
                 </el-form-item>
                 <el-form-item label="溢价率">
-                    <el-input v-model="form.name2"></el-input>
+                    <el-input :disabled="true" v-model="form.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="楼面价">
-                    <el-input v-model="form.name2"></el-input>
+                    <el-input :disabled="true" v-model="form.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="关联楼盘">
-                    <el-input v-model="form.name2"></el-input>
+                    <el-input :disabled="true" v-model="form.name2"></el-input>
                 </el-form-item>
-                <el-form-item label="备注">
+                <el-form-item label="备注" prop="remark">
                     <el-input type="textarea" rows="5" v-model="form.remark"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">表单提交</el-button>
+                    <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
@@ -179,14 +168,14 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="用地面积">
-                    <el-input v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.siteArea"></el-input>
                 </el-form-item>
 
                 <el-form-item label="容积率">
-                    <el-input v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="建筑面积">
-                    <el-input v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="建筑密度">
                     <el-input v-model="form2.density"></el-input>
@@ -196,22 +185,22 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="成交价">
-                    <el-input v-model="form2.transactionPrice"></el-input>
+                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form2.transactionPrice"></el-input>
                 </el-form-item>
                 <el-form-item label="起拍价">
-                    <el-input v-model="form2.startingPrice"></el-input>
+                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form2.startingPrice"></el-input>
                 </el-form-item>
                 <el-form-item label="受让方">
                     <el-input v-model="form2.transfer"></el-input>
                 </el-form-item>
                 <el-form-item label="溢价率">
-                    <el-input v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="楼面价">
-                    <el-input v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="关联楼盘">
-                    <el-input v-model="form2.name2"></el-input>
+                    <el-input :disabled="true" v-model="form2.name2"></el-input>
                 </el-form-item>
                 <el-form-item label="备注">
                     <el-input type="textarea" rows="5" v-model="form2.remark"></el-input>
@@ -232,12 +221,26 @@ export default {
     name: 'basetable',
     data() {
         return {
+            rules: {
+                landName: [{ required: true, message: '请输入土地名称', trigger: 'blur' }],
+                projectId: [{ required: true, message: '请选择所属项目', trigger: 'change' }],
+                landAddress: [{ required: true, message: '请输入土地地址名称', trigger: 'blur' }],
+                plateId: [{ required: true, message: '请选择所属板块', trigger: 'change' }],
+                density: [{ required: true, message: '请输入建筑密度', trigger: 'changeblur' }],
+                succeedTime: [{ required: true, message: '请选择日期', trigger: 'change' }],
+                transactionPrice: [{ required: true, message: '请输入成交价格', trigger: 'blur' }],
+                startingPrice: [{ required: true, message: '请输入起拍价格', trigger: 'blur' },
+                ],
+                transfer: [{ required: true, message: '请输入受让方名称', trigger: 'blur' }],
+                remark: [{ required: true, message: '请输入备注', trigger: 'blur' }]
+            },
+
             selectPlateData: [],
             selectProjectData: [],
             administrative: [],
 
             form: {
-                name2: '不可修改',
+                name2: '',
                 delivery: true,
                 type: ['步步高'],
                 resource: '小天才',
@@ -257,7 +260,7 @@ export default {
                 transfer: '' // 受让方名称
             },
             form2: {
-                name2: '不可修改',
+                name2: '',
                 delivery: true,
                 type: ['步步高'],
                 resource: '小天才',
@@ -330,14 +333,23 @@ export default {
                 this.selectProjectData = res.data.data;
             });
         },
-        onSubmit() {
-            // this.form.succeedTime = this.form.succeedTime + ' ' + '00:00:00';
-            userApi.addLand(this.form, (res) => {
-                console.log(res);
-                this.$message.success('提交成功！');
-                this.editVisible = false;
-                this.getData();
+        onSubmit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    userApi.addLand(this.form, (res) => {
+                        console.log(res);
+                        this.$message.success('提交成功！');
+                        this.editVisible = false;
+                        this.getData();
+                        this.$refs[form].resetFields();
+                    });
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
+                }
             });
+            // this.form.succeedTime = this.form.succeedTime + ' ' + '00:00:00';
         },
         onSubmit2() {
             // this.form2.succeedTime = this.form2.succeedTime + ' ' + '00:00:00';
@@ -397,7 +409,7 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
-        // 编辑操作
+        // 编辑操作 siteArea
         handleEdit(index, row) {
             this.idx = index;
             this.form2.administrativeName = row.administrativeName;
@@ -405,6 +417,7 @@ export default {
             this.form2.landAddress = row.landAddress;
             this.form2.landName = row.landName;
             this.form2.plateId = row.plateId;
+            this.form2.siteArea = row.siteArea;
             this.form2.projectId = row.projectId;
             this.form2.remark = row.remark;
             this.form2.startingPrice = row.startingPrice;

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
-import Axios from 'axios';
+import Axios from './index';
 // let api = 'http://192.168.1.128:7004'
 let api = 'http://39.98.126.20:7004'
 // 账号密码登录

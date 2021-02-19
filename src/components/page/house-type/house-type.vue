@@ -32,7 +32,7 @@
                 </el-select>
             </div>
             <el-table
-                :data="tableData.slice((query.pageIndex-1)*query.pageSize,query.pageIndex*query.pageSize)"
+                :data="tableData.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize)"
                 border
                 class="table"
                 ref="multipleTable"
@@ -88,11 +88,11 @@
 
         <!-- 添加弹出框 -->
         <el-dialog title="添加" :visible.sync="editVisible" width="40%">
-            <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="户型名称">
+            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+                <el-form-item label="户型名称" prop="houseName">
                     <el-input v-model="form.houseName"></el-input>
                 </el-form-item>
-                <el-form-item label="所属楼盘">
+                <el-form-item label="所属楼盘" prop="premisesId">
                     <el-select v-model="form.premisesId" placeholder="请选择">
                         <el-option
                             :key="item.premisesId"
@@ -140,13 +140,13 @@
                     </div>
                 </el-form-item>
 
-                <el-form-item label="户型面积">
+                <el-form-item label="户型面积" prop="area">
                     <el-input v-model="form.area"></el-input>
                 </el-form-item>
-                <el-form-item label="供应套数">
+                <el-form-item label="供应套数" prop="supply">
                     <el-input v-model="form.supply"></el-input>
                 </el-form-item>
-                <el-form-item label="成交套数">
+                <el-form-item label="成交套数" prop="transaction">
                     <el-input style="width: 70%" v-model="form.transaction"></el-input>
                     <el-button style="margin: 0 10px" type="primary">添加</el-button>
                 </el-form-item>
@@ -155,21 +155,21 @@
                     <el-input v-model="item.value" @blur="blur(item.value, item.id)"></el-input>
                 </el-form-item>
 
-                <el-form-item label="南向总面宽">
+                <el-form-item label="南向总面宽" prop="southWide">
                     <el-input v-model="form.southWide"></el-input>
                 </el-form-item>
-                <el-form-item label="起居室面宽">
+                <el-form-item label="起居室面宽" prop="livingWide">
                     <el-input v-model="form.livingWide"></el-input>
                 </el-form-item>
-                <el-form-item label="主卧面宽">
+                <el-form-item label="主卧面宽" prop="masterWide">
                     <el-input v-model="form.masterWide"></el-input>
                 </el-form-item>
-                <el-form-item label="客卧面宽">
+                <el-form-item label="客卧面宽" prop="guestWide">
                     <el-input v-model="form.guestWide"></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">表单提交</el-button>
+                    <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
                     <!-- <el-button>取消</el-button> -->
                 </el-form-item>
             </el-form>
@@ -267,12 +267,24 @@
 </template>
 
 <script>
-// import { fetchData } from '../../../api/index';
+// import { fetchData } from '../../../api/index';livingWide
 import userApi from '@/service/user.js';
 export default {
     name: 'basetable',
     data() {
         return {
+            rules: {
+                houseName: [{ required: true, message: '请输入户型名称', trigger: 'blur' }],
+                area: [{ required: true, message: '请输入户型面积', trigger: 'blur' }],
+                supply: [{ required: true, message: '请输入供应套数', trigger: 'blur' }],
+                transaction: [{ required: true, message: '请输入成交套数', trigger: 'blur' }],
+                southWide: [{ required: true, message: '请输入南向总面宽', trigger: 'blur' }],
+                livingWide: [{ required: true, message: '请输入起居室面宽', trigger: 'blur' }],
+                masterWide: [{ required: true, message: '请输入主卧面宽', trigger: 'blur' }],
+                guestWide: [{ required: true, message: '请输入客卧面宽', trigger: 'blur' }],
+                premisesId: [{ required: true, message: '请选择所属楼盘', trigger: 'change' }]
+            },
+
             selectPlateData: [],
             selectProjectData: [],
             administrative: [],
@@ -420,33 +432,42 @@ export default {
                 this.dialogFormVisible = false;
             });
         },
-        onSubmit() {
-            console.log(this.form);
-            this.form.constitute = JSON.stringify(this.form.constitute);
-            userApi.addType(this.form, (res) => {
-                console.log(res);
-                this.$message.success('提交成功！');
-                this.editVisible = true;
-                this.form = {
-                    name: '',
-                    name2: '不可修改',
-                    delivery: true,
-                    type: ['步步高'],
-                    resource: '小天才',
-                    options: [],
+        onSubmit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    console.log(this.form);
+                    this.form.constitute = JSON.stringify(this.form.constitute);
+                    userApi.addType(this.form, (res) => {
+                        console.log(res);
+                        this.$message.success('提交成功！');
+                        this.editVisible = false;
+                        this.form = {
+                            name: '',
+                            name2: '不可修改',
+                            delivery: true,
+                            type: ['步步高'],
+                            resource: '小天才',
+                            options: [],
 
-                    area: '', // 户型面积
-                    constitute: {}, // 组成
-                    guestWide: '', // 客卧面宽
-                    houseFiles: [], //
-                    houseName: '', // 户型名称
-                    livingWide: '', // 起居室面宽
-                    masterWide: '', // 主卧面宽
-                    premisesId: '1', // 楼盘id
-                    southWide: '', // 南向总面宽
-                    supply: '', // 供应套数
-                    transaction: '' // 成交套数
-                };
+                            area: '', // 户型面积
+                            constitute: {}, // 组成
+                            guestWide: '', // 客卧面宽
+                            houseFiles: [], //
+                            houseName: '', // 户型名称
+                            livingWide: '', // 起居室面宽
+                            masterWide: '', // 主卧面宽
+                            premisesId: '1', // 楼盘id
+                            southWide: '', // 南向总面宽
+                            supply: '', // 供应套数
+                            transaction: '' // 成交套数
+                        };
+                        
+                    });
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
+                }
             });
         },
         onSubmit2() {
@@ -497,7 +518,7 @@ export default {
             //     this.tableData = res.list;
             //     this.pageTotal = res.pageTotal || 50;
             // });
-             let Obj = {};
+            let Obj = {};
             if (this.query.adminId != '') {
                 Obj.adminId = this.query.adminId;
             }

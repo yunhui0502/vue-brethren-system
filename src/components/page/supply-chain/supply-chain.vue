@@ -46,26 +46,29 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog :title="title" :visible.sync="editVisible" width="30%" center>
-            <el-form ref="form" :model="form" label-width="100px">
-                <el-form-item label="库名称">
+            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+                <el-form-item label="库名称" prop="libraryName">
                     <el-input v-model="form.libraryName"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-import { fetchData } from '../../../api/index';
 import userApi from '@/service/user.js';
 export default {
     name: 'basetable',
     data() {
         return {
+            rules: {
+                libraryName: [{ required: true, message: '请输入库名称', trigger: 'blur' }]
+            },
+
             title: '',
             selectPremisesData: '',
             query: {
@@ -75,7 +78,7 @@ export default {
                 pageSize: 10
             },
             form: {
-                libraryName: '',
+                libraryName: ''
             },
             tableData: [],
             multipleSelection: [],
@@ -115,24 +118,32 @@ export default {
             });
         },
         // 添加
-        saveEdit() {
-            if (this.title == '编辑') {
-                userApi.updateLibrary(this.form, (res) => {
-                    console.log('编辑', res);
-                    this.$message.success('编辑成功');
-                    this.editVisible = false;
-                    this.form = { libraryName: '' };
-                    this.getData();
-                });
-            } else {
-                userApi.addLibrary(this.form, (res) => {
-                    console.log('添加', res);
-                    this.$message.success('添加成功');
-                    this.editVisible = false;
-                    this.form.libraryName = '';
-                    this.getData();
-                });
-            }
+        saveEdit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    if (this.title == '编辑') {
+                        userApi.updateLibrary(this.form, (res) => {
+                            console.log('编辑', res);
+                            this.$message.success('编辑成功');
+                            this.editVisible = false;
+                            this.form = { libraryName: '' };
+                            this.getData();
+                        });
+                    } else {
+                        userApi.addLibrary(this.form, (res) => {
+                            console.log('添加', res);
+                            this.$message.success('添加成功');
+                            this.editVisible = false;
+                            this.form.libraryName = '';
+                            this.getData();
+                        });
+                    }
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
+                }
+            });
         },
         // 触发搜索按钮
         handleSearch() {
@@ -174,7 +185,7 @@ export default {
             console.log(row);
             this.idx = index;
             this.title = '编辑';
-            this.form.libraryName  = row.libraryName;
+            this.form.libraryName = row.libraryName;
             this.form.libraryId = row.id;
             this.editVisible = true;
         },

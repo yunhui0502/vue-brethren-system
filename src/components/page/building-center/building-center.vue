@@ -2,7 +2,6 @@
     <!-- ------------------------------------------------楼号数据管理中心---------------------------------------------------------------------------------------- -->
     <div>
         <div class="container">
-           
             <div class="handle-box">
                 <el-select v-model="query.adminId" clearable placeholder="请选择区域" class="handle-select mr10">
                     <el-option v-for="item in administrative" :key="item.id" :label="item.administrativeName" :value="item.id"></el-option>
@@ -109,16 +108,16 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog :title="title" :visible.sync="editVisible" width="50%" center>
-            <el-form ref="form" :model="form" label-width="120px">
-                <el-form-item label="楼号名称">
+            <el-form ref="form" :rules="rules" :model="form" label-width="120px">
+                <el-form-item label="楼号名称" prop="towerNo">
                     <el-input v-model="form.towerNo"></el-input>
                 </el-form-item>
-                <el-form-item label="同步楼号">
+                <el-form-item label="同步楼号" prop="synchronizationNo">
                     <el-select v-model="form.synchronizationNo" placeholder="请选择">
                         <el-option v-for="item in tableData" :key="item.towerId" :label="item.towerName" :value="item.towerId"> </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="所属楼盘">
+                <el-form-item label="所属楼盘" prop="premisesId">
                     <el-select v-model="form.premisesId" placeholder="请选择">
                         <el-option
                             v-for="item in selectPremisesData"
@@ -132,7 +131,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
+                <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -145,7 +144,40 @@ export default {
     name: 'basetable',
     data() {
         return {
-            str:['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+            rules: {
+                towerNo: [{ required: true, message: '请输入楼号名称', trigger: 'blur' }],
+                // synchronizationNo: [{ required: true, message: '请输入楼号名称', trigger: 'change' }],
+                premisesId: [{ required: true, message: '请选择所属楼盘', trigger: 'change' }]
+            },
+
+            str: [
+                'A',
+                'B',
+                'C',
+                'D',
+                'E',
+                'F',
+                'G',
+                'H',
+                'I',
+                'J',
+                'K',
+                'L',
+                'M',
+                'N',
+                'O',
+                'P',
+                'Q',
+                'R',
+                'S',
+                'T',
+                'U',
+                'V',
+                'W',
+                'X',
+                'Y',
+                'Z'
+            ],
             selectPlateData: [],
             selectProjectData: [],
             administrative: [],
@@ -213,11 +245,11 @@ export default {
         generateMixed(n) {
             var res = '';
             for (var i = 0; i < n; i++) {
-                var id = Math.ceil(Math.random() * 26 -1);
-                
+                var id = Math.ceil(Math.random() * 26 - 1);
+
                 res += this.str[id];
             }
-            console.log(res)
+            console.log(res);
             return res;
         },
         selectAdministrative() {
@@ -399,29 +431,37 @@ export default {
                 this.tableData = res.data.data;
                 this.pageTotal = this.tableData.length;
                 this.tableData.forEach((item) => {
-                    item.serial = this.generateMixed(6) + '-' + item.towerName
-                })
+                    item.serial = this.generateMixed(6) + '-' + item.towerName;
+                });
             });
         },
         // 添加
-        saveEdit() {
-            if (this.title == '编辑') {
-                userApi.updateProject(this.form, (res) => {
-                    console.log('编辑', res);
-                    this.$message.success('编辑成功');
-                    this.editVisible = false;
-                    this.form = { projectName: '' };
-                    this.getData();
-                });
-            } else {
-                userApi.addTower(this.form, (res) => {
-                    console.log('添加', res);
-                    this.$message.success('添加成功');
-                    this.editVisible = false;
-                    this.form.projectName = '';
-                    this.getData();
-                });
-            }
+        saveEdit(form) {
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    if (this.title == '编辑') {
+                        userApi.updateProject(this.form, (res) => {
+                            console.log('编辑', res);
+                            this.$message.success('编辑成功');
+                            this.editVisible = false;
+                            this.form = { projectName: '' };
+                            this.getData();
+                        });
+                    } else {
+                        userApi.addTower(this.form, (res) => {
+                            console.log('添加', res);
+                            this.$message.success('添加成功');
+                            this.editVisible = false;
+                            this.form.projectName = '';
+                            this.getData();
+                        });
+                    }
+                } else {
+                    console.log('error submit!!');
+                    //  this.$refs[form].resetFields();
+                    return false;
+                }
+            });
         },
         // 触发搜索按钮
         handleSearch() {
