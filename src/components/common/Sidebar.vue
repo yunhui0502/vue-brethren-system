@@ -246,4 +246,7 @@ export default {
 .sidebar > ul {
     height: 100%;
 }
+.el-menu-item {
+    font-size: 16px;
+}
 </style>

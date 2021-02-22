@@ -5,6 +5,7 @@
             <div class="handle-box">
                 <el-button style="float: right; margin: 20px" type="primary" @click="editVisible = true">添加区域板块</el-button>
                 <el-button type="primary" style="float: right; margin: 20px 0" @click="dialogFormVisible = true">添加</el-button>
+                <el-button type="primary" style="float: right; margin: 20px 4px" @click="dialogFormVisible2 = true">编辑</el-button>
                 <el-select v-model="value" style="float: right; margin: 20px 0" placeholder="请选择">
                     <el-option v-for="item in options" :key="item.id" :label="item.administrativeName" :value="item.id"> </el-option>
                 </el-select>
@@ -63,110 +64,153 @@
                 <el-button type="primary" @click="addroom('countForm')">确 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="添加" :visible.sync="dialogFormVisible2" width="20%">
+            <el-table class="goods-table" :data="options" stripe>
+                <!-- <el-table-column type="selection"></el-table-column> -->
+                <el-table-column label="所属行政区域">
+                    <template slot-scope="scope">
+                        <el-input
+                            v-show="scope.row.isDeleted != 0"
+                            placeholder="请输入内容"
+                            v-model="scope.row.administrativeName"
+                        ></el-input>
+                        <span v-show="scope.row.isDeleted == 0">{{ scope.row.administrativeName }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small" @click="compile(scope.row)">编辑</el-button>
+                        <el-button type="text" @click="save(scope)">保存</el-button>
+                        <el-button class="ff3" type="text" style="color: red" @click="deleteEvent(scope.row.id)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
         <!-- 添加弹出框 -->
-        <el-dialog title="添加" :visible.sync="editVisible" width="40%">
+        <el-dialog title="添加" :visible.sync="editVisible" width="60%">
             <el-form ref="form" :rules="rules" :model="form" label-width="130px">
-                <el-form-item label="板块名称" prop="plateName">
-                    <el-input v-model="form.plateName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属行政区" prop="administrativeId">
-                    <el-select v-model="form.administrativeId" placeholder="请选择">
-                        <el-option v-for="item in options" :key="item.id" :label="item.administrativeName" :value="item.id"> </el-option>
-                        <!-- <el-option key="bbk" label="步步高" value="1"></el-option>
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="板块名称" prop="plateName">
+                            <el-input v-model="form.plateName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属行政区" prop="administrativeId">
+                            <el-select v-model="form.administrativeId" placeholder="请选择">
+                                <el-option v-for="item in options" :key="item.id" :label="item.administrativeName" :value="item.id">
+                                </el-option>
+                                <!-- <el-option key="bbk" label="步步高" value="1"></el-option>
                         <el-option key="xtc" label="小天才" value="2"></el-option>
                         <el-option key="imoo" label="imoo" value="3"></el-option> -->
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="板块地址" prop="plateAddress">
-                    <el-input v-model="form.plateAddress"></el-input>
-                </el-form-item>
-                <el-form-item label="区域定位" prop="plateLabelId">
-                    <el-checkbox-group v-model="form.plateLabelId">
-                        <el-checkbox :label="item.id" v-for="item in areaData" :key="item.id" name="type">{{ item.labelName }}</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="区域优势" prop="advantage">
-                    <el-input type="textarea" rows="5" v-model="form.advantage"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="供应套数">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="成交套数">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="供求比">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item> -->
-                <!-- <el-form-item label="已有楼盘">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item> -->
-                <!-- <el-form-item label="容积率">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item> -->
-                <el-form-item label="置业均价" prop="averagePrice">
-                    <el-input v-model="form.averagePrice"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="楼盘均价">
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="板块地址" prop="plateAddress">
+                            <el-input v-model="form.plateAddress"></el-input>
+                        </el-form-item>
+                        <el-form-item label="区域定位" prop="plateLabelId">
+                            <el-checkbox-group v-model="form.plateLabelId">
+                                <el-checkbox :label="item.id" v-for="item in areaData" :key="item.id" name="type">{{
+                                    item.labelName
+                                }}</el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item>
+                        <el-form-item label="区域优势" prop="advantage">
+                            <el-input type="textarea" rows="5" v-model="form.advantage"></el-input>
+                        </el-form-item>
+                        <el-form-item label="供应套数">
+                            <el-input :disabled="true" v-model="form.name"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div class="formBox-item">
+                        <el-form-item label="成交套数">
+                            <el-input :disabled="true" v-model="form.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="供求比">
+                            <el-input :disabled="true" v-model="form.name"></el-input>
+                        </el-form-item>
+                        <!-- <el-form-item label="已有楼盘">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item> -->
-                <el-form-item label="区域发展信息" prop="developMessage">
-                    <el-input type="textarea" rows="5" v-model="form.developMessage"></el-input>
-                </el-form-item>
-                <el-form-item>
+                        <!-- <el-form-item label="容积率">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item> -->
+                        <el-form-item label="置业均价" prop="averagePrice">
+                            <el-input v-model="form.averagePrice"></el-input>
+                        </el-form-item>
+                        <!-- <el-form-item label="楼盘均价">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item> -->
+                        <el-form-item label="区域发展信息" prop="developMessage">
+                            <el-input type="textarea" rows="5" v-model="form.developMessage"></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+
+                <el-form-item class="center">
                     <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
                     <el-button @click="editVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible2" width="40%">
+        <el-dialog title="编辑" :visible.sync="editVisible2" width="60%">
             <el-form ref="form" :model="form2" label-width="130px">
-                <el-form-item label="板块名称">
-                    <el-input v-model="form2.plateName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属行政区">
-                    <el-select v-model="form2.administrativeId" placeholder="请选择">
-                        <el-option v-for="item in options" :key="item.id" :label="item.administrativeName" :value="item.id"> </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="板块地址">
-                    <el-input v-model="form2.plateAddress"></el-input>
-                </el-form-item>
-                <el-form-item label="区域定位">
-                    <el-checkbox-group v-model="form2.plateLabelId">
-                        <el-checkbox :label="item.id" v-for="item in areaData" :key="item.id" name="type">{{ item.labelName }}</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="区域优势">
-                    <el-input type="textarea" rows="5" v-model="form2.advantage"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="供应套数">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="成交套数">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="供求比">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item> -->
-                <!-- <el-form-item label="已有楼盘">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item> -->
-                <!-- <el-form-item label="容积率">
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item> -->
-                <el-form-item label="置业均价">
-                    <el-input v-model="form2.averagePrice"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="楼盘均价">
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="板块名称">
+                            <el-input v-model="form2.plateName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属行政区">
+                            <el-select v-model="form2.administrativeId" placeholder="请选择">
+                                <el-option v-for="item in options" :key="item.id" :label="item.administrativeName" :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="板块地址">
+                            <el-input v-model="form2.plateAddress"></el-input>
+                        </el-form-item>
+                        <el-form-item label="区域定位">
+                            <el-checkbox-group v-model="form2.plateLabelId">
+                                <el-checkbox :label="item.id" v-for="item in areaData" :key="item.id" name="type">{{
+                                    item.labelName
+                                }}</el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item>
+                        <el-form-item label="区域优势">
+                            <el-input type="textarea" rows="5" v-model="form2.advantage"></el-input>
+                        </el-form-item>
+                        <el-form-item label="供应套数">
+                            <el-input :disabled="true" v-model="form2.supply"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div class="formBox-item">
+                        <el-form-item label="成交套数">
+                            <el-input :disabled="true" v-model="form2.transaction"></el-input>
+                        </el-form-item>
+                        <el-form-item label="供求比">
+                            <el-input :disabled="true" v-model="form2.ratio"></el-input>
+                        </el-form-item>
+                        <!-- <el-form-item label="已有楼盘">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item> -->
-                <el-form-item label="区域发展信息">
-                    <el-input type="textarea" rows="5" v-model="form2.developMessage"></el-input>
-                </el-form-item>
-                <el-form-item>
+                        <!-- <el-form-item label="容积率">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item> -->
+                        <el-form-item label="置业均价">
+                            <el-input v-model="form2.averagePrice"></el-input>
+                        </el-form-item>
+                        <!-- <el-form-item label="楼盘均价">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item> -->
+                        <el-form-item label="区域发展信息">
+                            <el-input type="textarea" rows="5" v-model="form2.developMessage"></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+
+                <el-form-item class="center">
                     <el-button type="primary" @click="updatePlate">表单提交</el-button>
-                    <el-button>取消</el-button>
+                    <el-button @click="editVisible2 = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -194,8 +238,9 @@ export default {
                 name: [{ required: true, message: '请输入板块名称', trigger: 'blur' }]
             },
             value: '',
-            options: [],
+            options: [{ administrativeName: '12', show: true }],
             dialogFormVisible: false,
+            dialogFormVisible2: false,
             editVisible: false,
             editVisible2: false,
             areaData: '',
@@ -210,7 +255,9 @@ export default {
                 plateAddress: '', // 板块地址
                 plateLabelId: [], //
                 plateName: '', //板块名称
-
+                transaction: '',
+                supply: '',
+                ratio: '',
                 name: ''
             },
             form2: {
@@ -244,10 +291,42 @@ export default {
         this.selectAdministrative();
     },
     methods: {
+        compile(row) {
+            console.log(row);
+            row.isDeleted = !row.isDeleted;
+        },
+        save(scope) {
+            userApi.updateAdministrative({ id: scope.row.id,name:scope.row.administrativeName }, (res) => {
+                this.$message({
+                    showClose: true,
+                    message: '修改成功',
+                    type: 'success'
+                });
+                this.selectAdministrative();
+            });
+        },
+        // 删除商品规格
+        deleteEvent(id) {
+            this.$confirm('此操作将会删除该区域, 是否继续?', '提示', {}).then(() => {
+                console.log(id);
+                userApi.deleteAdministrative({ id: id }, () => {
+                    this.$message({
+                        showClose: true,
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                    this.selectAdministrative();
+                });
+            });
+        },
         selectAdministrative() {
             userApi.selectAdministrative((res) => {
                 console.log('区域', res);
                 this.options = res.data.data;
+                this.options.forEach((item) => {
+                    item.show = true;
+                });
+                console.log('this.optionsthis.optionsthis.options', this.options);
             });
         },
         addroom(form) {
@@ -292,6 +371,9 @@ export default {
             this.form2.plateAddress = row.address;
             this.form2.plateName = row.plateName;
             this.form2.plateId = row.plateId;
+            this.form2.supply = row.supply;
+            this.form2.transaction = row.transaction;
+            this.form2.ratio = row.ratio;
             this.editVisible2 = true;
         },
         selectLabel() {
@@ -324,7 +406,7 @@ export default {
                         this.$message.success('提交成功!');
                         this.editVisible = false;
                         this.$refs[form].resetFields();
-                        this.selectPlate()
+                        this.selectPlate();
                     });
                 } else {
                     console.log('error submit!!');
@@ -384,6 +466,8 @@ export default {
 </script>
 
 <style scoped>
+.formBox {
+}
 .handle-box {
     margin-bottom: 20px;
 }

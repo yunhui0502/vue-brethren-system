@@ -72,7 +72,7 @@
             </span>
         </el-dialog>
         <el-dialog :title="title" :visible.sync="editVisible2" width="50%" center>
-            <el-form ref="form" :model="form" label-width="100px">
+            <el-form ref="form" :model="form" label-width="120px">
                 <el-form-item label="所以土地/楼盘">
                     <el-table
                         :data="selectPremisesData"
@@ -82,8 +82,9 @@
                         header-cell-class-name="table-header"
                         @selection-change="handleSelectionChange"
                     >
-                        <el-table-column prop="landName" align="center" label="土地名称"></el-table-column>
                         <el-table-column prop="premisesName" align="center" label="楼盘名称"></el-table-column>
+                        <el-table-column prop="landName" align="center" label="土地名称"></el-table-column>
+                        <el-table-column prop="developersName" align="center" label="开发商"></el-table-column>
                     </el-table>
                 </el-form-item>
             </el-form>
@@ -133,7 +134,7 @@ export default {
     methods: {
         examine(row) {
             this.editVisible2 = true;
-             userApi.selectPremises({projectId: row.projectId }, (res) => {
+            userApi.selectPremises({ projectId: row.projectId }, (res) => {
                 console.log('楼盘', res);
                 this.selectPremisesData = res.data.data;
             });
@@ -147,7 +148,7 @@ export default {
                     data.forEach((item2) => {
                         item.developers.push(item2.developersName);
                     });
-                    console.log(this.tableData)
+                    console.log(this.tableData);
                 });
             });
         },

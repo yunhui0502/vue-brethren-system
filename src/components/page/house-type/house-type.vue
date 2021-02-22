@@ -87,88 +87,94 @@
         </el-dialog>
 
         <!-- 添加弹出框 -->
-        <el-dialog title="添加" :visible.sync="editVisible" width="40%">
+        <el-dialog title="添加" :visible.sync="editVisible" width="60%">
             <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                <el-form-item label="户型名称" prop="houseName">
-                    <el-input v-model="form.houseName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属楼盘" prop="premisesId">
-                    <el-select v-model="form.premisesId" placeholder="请选择">
-                        <el-option
-                            :key="item.premisesId"
-                            v-for="item in PremisesData"
-                            :label="item.premisesName"
-                            :value="item.premisesId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="所属项目">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="所属区域">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="所属板块">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="所属土地">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="户型名称" prop="houseName">
+                            <el-input v-model="form.houseName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属楼盘" prop="premisesId">
+                            <el-select v-model="form.premisesId" placeholder="请选择">
+                                <el-option
+                                    :key="item.premisesId"
+                                    v-for="item in PremisesData"
+                                    :label="item.premisesName"
+                                    :value="item.premisesId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="所属项目">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属区域">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属板块">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属土地">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
 
-                <el-form-item label="户型图">
-                    <el-upload
-                        class="upload-demo"
-                        action="http://39.98.126.20:7004/user/File/fileUpLoad"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleAvatarSuccess"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                    >
-                        <el-button size="small" type="">点击上传立面</el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="">
-                    <div class="img-box">
-                        <div v-for="(item, i) in form.houseFiles" :key="i" class="img-item">
-                            <img width="100%" :src="item" alt="" />
-                            <i class="el-icon-close" @click="deletePicture(item)"></i>
-                        </div>
+                        <el-form-item label="户型图">
+                            <el-upload
+                                class="upload-demo"
+                                action="http://39.98.126.20:7004/user/File/fileUpLoad"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :on-success="handleAvatarSuccess"
+                                :before-remove="beforeRemove"
+                                multiple
+                                :on-exceed="handleExceed"
+                                :file-list="fileList"
+                            >
+                                <el-button size="small" type="">点击上传立面</el-button>
+                                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="">
+                            <div class="img-box">
+                                <div v-for="(item, i) in form.houseFiles" :key="i" class="img-item">
+                                    <img width="100%" :src="item" alt="" />
+                                    <i class="el-icon-close" @click="deletePicture(item)"></i>
+                                </div>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item label="户型面积" prop="area">
+                            <el-input v-model="form.area"></el-input>
+                        </el-form-item>
                     </div>
-                </el-form-item>
+                    <div class="formBox-item">
+                        <el-form-item label="供应套数" prop="supply">
+                            <el-input v-model="form.supply"></el-input>
+                        </el-form-item>
+                        <el-form-item label="成交套数" prop="transaction">
+                            <el-input style="width: 70%" v-model="form.transaction"></el-input>
+                            <el-button style="margin: 0 10px" type="primary">添加</el-button>
+                        </el-form-item>
 
-                <el-form-item label="户型面积" prop="area">
-                    <el-input v-model="form.area"></el-input>
-                </el-form-item>
-                <el-form-item label="供应套数" prop="supply">
-                    <el-input v-model="form.supply"></el-input>
-                </el-form-item>
-                <el-form-item label="成交套数" prop="transaction">
-                    <el-input style="width: 70%" v-model="form.transaction"></el-input>
-                    <el-button style="margin: 0 10px" type="primary">添加</el-button>
-                </el-form-item>
+                        <el-form-item :label="item.constituteName" v-for="item in options2" :key="item.id">
+                            <el-input v-model="item.value" @blur="blur(item.value, item.id)"></el-input>
+                        </el-form-item>
 
-                <el-form-item :label="item.constituteName" v-for="item in options2" :key="item.id">
-                    <el-input v-model="item.value" @blur="blur(item.value, item.id)"></el-input>
-                </el-form-item>
+                        <el-form-item label="南向总面宽" prop="southWide">
+                            <el-input v-model="form.southWide"></el-input>
+                        </el-form-item>
+                        <el-form-item label="起居室面宽" prop="livingWide">
+                            <el-input v-model="form.livingWide"></el-input>
+                        </el-form-item>
+                        <el-form-item label="主卧面宽" prop="masterWide">
+                            <el-input v-model="form.masterWide"></el-input>
+                        </el-form-item>
+                        <el-form-item label="客卧面宽" prop="guestWide">
+                            <el-input v-model="form.guestWide"></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
 
-                <el-form-item label="南向总面宽" prop="southWide">
-                    <el-input v-model="form.southWide"></el-input>
-                </el-form-item>
-                <el-form-item label="起居室面宽" prop="livingWide">
-                    <el-input v-model="form.livingWide"></el-input>
-                </el-form-item>
-                <el-form-item label="主卧面宽" prop="masterWide">
-                    <el-input v-model="form.masterWide"></el-input>
-                </el-form-item>
-                <el-form-item label="客卧面宽" prop="guestWide">
-                    <el-input v-model="form.guestWide"></el-input>
-                </el-form-item>
-
-                <el-form-item>
+                <el-form-item class="center">
                     <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
                     <!-- <el-button>取消</el-button> -->
                 </el-form-item>
@@ -176,88 +182,94 @@
         </el-dialog>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible2" width="40%">
+        <el-dialog title="编辑" :visible.sync="editVisible2" width="60%">
             <el-form ref="form" :model="form2" label-width="100px">
-                <el-form-item label="户型名称">
-                    <el-input v-model="form2.houseName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属楼盘">
-                    <el-select v-model="form2.premisesId" placeholder="请选择">
-                        <el-option
-                            :key="item.premisesId"
-                            v-for="item in PremisesData"
-                            :label="item.premisesName"
-                            :value="item.premisesId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="所属项目">
-                    <el-input :disabled="true" v-model="form2.projectName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属区域">
-                    <el-input :disabled="true" v-model="form2.administrativeName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属板块">
-                    <el-input :disabled="true" v-model="form2.plateName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属土地">
-                    <el-input :disabled="true" v-model="form2.landName"></el-input>
-                </el-form-item>
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="户型名称">
+                            <el-input v-model="form2.houseName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属楼盘">
+                            <el-select v-model="form2.premisesId" placeholder="请选择">
+                                <el-option
+                                    :key="item.premisesId"
+                                    v-for="item in PremisesData"
+                                    :label="item.premisesName"
+                                    :value="item.premisesId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="所属项目">
+                            <el-input :disabled="true" v-model="form2.projectName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属区域">
+                            <el-input :disabled="true" v-model="form2.administrativeName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属板块">
+                            <el-input :disabled="true" v-model="form2.plateName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属土地">
+                            <el-input :disabled="true" v-model="form2.landName"></el-input>
+                        </el-form-item>
 
-                <el-form-item label="户型图">
-                    <el-upload
-                        class="upload-demo"
-                        action="http://39.98.126.20:7004/user/File/fileUpLoad"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleAvatarSuccess2"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                    >
-                        <el-button size="small" type="">点击上传立面</el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="">
-                    <div class="img-box">
-                        <div v-for="(item, i) in form2.houseFiles" :key="i" class="img-item">
-                            <img width="100%" :src="item" alt="" />
-                            <i class="el-icon-close" @click="deletePicture(item, i)"></i>
-                        </div>
+                        <el-form-item label="户型图">
+                            <el-upload
+                                class="upload-demo"
+                                action="http://39.98.126.20:7004/user/File/fileUpLoad"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :on-success="handleAvatarSuccess2"
+                                :before-remove="beforeRemove"
+                                multiple
+                                :on-exceed="handleExceed"
+                                :file-list="fileList"
+                            >
+                                <el-button size="small" type="">点击上传立面</el-button>
+                                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="">
+                            <div class="img-box">
+                                <div v-for="(item, i) in form2.houseFiles" :key="i" class="img-item">
+                                    <img width="100%" :src="item" alt="" />
+                                    <i class="el-icon-close" @click="deletePicture(item, i)"></i>
+                                </div>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item label="户型面积">
+                            <el-input v-model="form2.area"></el-input>
+                        </el-form-item>
                     </div>
-                </el-form-item>
+                    <div class="formBox-item">
+                        <el-form-item label="供应套数">
+                            <el-input v-model="form2.supply"></el-input>
+                        </el-form-item>
+                        <el-form-item label="成交套数">
+                            <el-input style="width: 70%" v-model="form2.transaction"></el-input>
+                            <el-button style="margin: 0 10px" type="primary">添加</el-button>
+                        </el-form-item>
 
-                <el-form-item label="户型面积">
-                    <el-input v-model="form2.area"></el-input>
-                </el-form-item>
-                <el-form-item label="供应套数">
-                    <el-input v-model="form2.supply"></el-input>
-                </el-form-item>
-                <el-form-item label="成交套数">
-                    <el-input style="width: 70%" v-model="form2.transaction"></el-input>
-                    <el-button style="margin: 0 10px" type="primary">添加</el-button>
-                </el-form-item>
+                        <el-form-item :label="item.constituteName" v-for="item in options2" :key="item.id">
+                            <el-input v-model="item.value" @blur="blur2(item.value, item.id)"></el-input>
+                        </el-form-item>
 
-                <el-form-item :label="item.constituteName" v-for="item in options2" :key="item.id">
-                    <el-input v-model="item.value" @blur="blur2(item.value, item.id)"></el-input>
-                </el-form-item>
+                        <el-form-item label="南向总面宽">
+                            <el-input v-model="form2.southWide"></el-input>
+                        </el-form-item>
+                        <el-form-item label="起居室面宽">
+                            <el-input v-model="form2.livingWide"></el-input>
+                        </el-form-item>
+                        <el-form-item label="主卧面宽">
+                            <el-input v-model="form2.masterWide"></el-input>
+                        </el-form-item>
+                        <el-form-item label="客卧面宽">
+                            <el-input v-model="form2.guestWide"></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
 
-                <el-form-item label="南向总面宽">
-                    <el-input v-model="form2.southWide"></el-input>
-                </el-form-item>
-                <el-form-item label="起居室面宽">
-                    <el-input v-model="form2.livingWide"></el-input>
-                </el-form-item>
-                <el-form-item label="主卧面宽">
-                    <el-input v-model="form2.masterWide"></el-input>
-                </el-form-item>
-                <el-form-item label="客卧面宽">
-                    <el-input v-model="form2.guestWide"></el-input>
-                </el-form-item>
-
-                <el-form-item>
+                <el-form-item class="center">
                     <el-button type="primary" @click="onSubmit2">表单提交</el-button>
                     <!-- <el-button>取消</el-button> -->
                 </el-form-item>
@@ -461,7 +473,6 @@ export default {
                             supply: '', // 供应套数
                             transaction: '' // 成交套数
                         };
-                        
                     });
                 } else {
                     console.log('error submit!!');
@@ -480,7 +491,7 @@ export default {
             userApi.updateType(this.form2, (res) => {
                 console.log(res);
                 this.$message.success('修改成功！');
-                this.editVisible2 = true;
+                this.editVisible2 = false;
             });
         },
         // -------------------------------图片-----------------------------------

@@ -335,7 +335,7 @@ export default {
         font-size: 18px;
         color: #ffffff;
         text-align: center;
-        background-color: #a2a2a2;
+        background-color: #b6b9be;
         margin: 20px;
     }
     .button {
@@ -346,7 +346,7 @@ export default {
         color: #ffffff;
         text-align: center;
         margin: 20px;
-        background-color: #5f7581;
+        background-color: #409eff;
     }
 }
 

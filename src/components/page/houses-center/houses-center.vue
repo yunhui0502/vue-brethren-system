@@ -70,233 +70,245 @@
         </div>
 
         <!-- 添加弹出框 -->
-        <el-dialog title="添加" :visible.sync="editVisible" width="40%">
+        <el-dialog title="添加" :visible.sync="editVisible" width="60%">
             <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                <el-form-item label="楼盘名称" prop="premisesName">
-                    <el-input v-model="form.premisesName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属土地" prop="landId">
-                    <el-select v-model="form.landId" placeholder="请选择">
-                        <el-option
-                            v-for="item in selectLandData"
-                            :key="item.landId"
-                            :label="item.landName"
-                            :value="item.landId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="所属区域">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="所属板块">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="所属项目">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="楼盘总图">
-                    <el-upload
-                        class="upload-demo"
-                        action="http://39.98.126.20:7004/user/File/fileUpLoad"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleAvatarSuccess"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                    >
-                        <el-button size="small" type="">点击上传总图</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="">
-                    <div class="img-box">
-                        <div v-for="(item, i) in form.houseSunPicture" :key="i" class="img-item">
-                            <img width="100%" :src="item" alt="" />
-                            <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
-                        </div>
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="楼盘名称" prop="premisesName">
+                            <el-input v-model="form.premisesName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属土地" prop="landId">
+                            <el-select v-model="form.landId" placeholder="请选择">
+                                <el-option
+                                    v-for="item in selectLandData"
+                                    :key="item.landId"
+                                    :label="item.landName"
+                                    :value="item.landId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="所属区域">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属板块">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属项目">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="楼盘总图">
+                            <el-upload
+                                class="upload-demo"
+                                action="http://39.98.126.20:7004/user/File/fileUpLoad"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :on-success="handleAvatarSuccess"
+                                :before-remove="beforeRemove"
+                                multiple
+                                :on-exceed="handleExceed"
+                                :file-list="fileList"
+                            >
+                                <el-button size="small" type="">点击上传总图</el-button>
+                                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="">
+                            <div class="img-box">
+                                <div v-for="(item, i) in form.houseSunPicture" :key="i" class="img-item">
+                                    <img width="100%" :src="item" alt="" />
+                                    <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
+                                </div>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item label="楼盘立面">
+                            <el-upload
+                                class="upload-demo"
+                                action="http://39.98.126.20:7004/user/File/fileUpLoad"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :before-remove="beforeRemove"
+                                :on-success="handleAvatarSuccess2"
+                                multiple
+                                :on-exceed="handleExceed"
+                                :file-list="fileList"
+                            >
+                                <el-button size="small" type="">点击上传立面</el-button>
+                                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                            </el-upload>
+                        </el-form-item>
+
+                        <el-form-item label="">
+                            <div class="img-box">
+                                <div v-for="(item, i) in form.houseFacadePicture" :key="i" class="img-item">
+                                    <img width="100%" :src="item" alt="" />
+                                    <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
+                                </div>
+                            </div>
+                        </el-form-item>
                     </div>
-                </el-form-item>
-
-                <el-form-item label="楼盘立面">
-                    <el-upload
-                        class="upload-demo"
-                        action="http://39.98.126.20:7004/user/File/fileUpLoad"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :before-remove="beforeRemove"
-                        :on-success="handleAvatarSuccess2"
-                        multiple
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                    >
-                        <el-button size="small" type="">点击上传立面</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                    </el-upload>
-                </el-form-item>
-
-                <el-form-item label="">
-                    <div class="img-box">
-                        <div v-for="(item, i) in form.houseFacadePicture" :key="i" class="img-item">
-                            <img width="100%" :src="item" alt="" />
-                            <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
-                        </div>
+                    <div class="formBox-item">
+                        <el-form-item label="产品类型" prop="plateLabelId">
+                            <el-checkbox-group v-model="form.plateLabelId">
+                                <el-checkbox v-for="(item, i) in productData" :key="i" :label="item.id" :value="item.id">{{
+                                    item.labelName
+                                }}</el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item>
+                        <el-form-item label="价格" prop="price">
+                            <el-input v-model="form.price"></el-input>
+                        </el-form-item>
+                        <el-form-item label="用地面积" prop="siteArea">
+                            <el-input @blur="blurSite('form')" v-model="form.siteArea"></el-input>
+                        </el-form-item>
+                        <el-form-item label="建筑面积" prop="architectureArea">
+                            <el-input @blur="blurArchitecture('form')" v-model="form.architectureArea"></el-input>
+                        </el-form-item>
+                        <el-form-item label="容积率" prop="plotRatio">
+                            <el-input :disabled="true" v-model="form.plotRatio"></el-input>
+                        </el-form-item>
+                        <el-form-item label="成交日期" prop="openingTime">
+                            <el-date-picker v-model="form.openingTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="开发商" prop="developersName">
+                            <el-input v-model="form.developersName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="总户数" prop="households">
+                            <el-input v-model="form.households"></el-input>
+                        </el-form-item>
+                        <el-form-item label="物业管理" prop="propertyName">
+                            <el-input v-model="form.propertyName"></el-input>
+                        </el-form-item>
                     </div>
-                </el-form-item>
+                </div>
 
-                <el-form-item label="产品类型" prop="plateLabelId">
-                    <el-checkbox-group v-model="form.plateLabelId">
-                        <el-checkbox v-for="(item, i) in productData" :key="i" :label="item.id" :value="item.id">{{
-                            item.labelName
-                        }}</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="价格" prop="price">
-                    <el-input v-model="form.price"></el-input>
-                </el-form-item>
-                <el-form-item label="用地面积" prop="siteArea">
-                    <el-input @blur="blurSite('form')" v-model="form.siteArea"></el-input>
-                </el-form-item>
-                <el-form-item label="建筑面积" prop="architectureArea">
-                    <el-input @blur="blurArchitecture('form')" v-model="form.architectureArea"></el-input>
-                </el-form-item>
-                <el-form-item label="容积率" prop="plotRatio">
-                    <el-input :disabled="true" v-model="form.plotRatio"></el-input>
-                </el-form-item>
-                <el-form-item label="成交日期" prop="openingTime">
-                    <el-date-picker v-model="form.openingTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="开发商" prop="developersName">
-                    <el-input v-model="form.developersName"></el-input>
-                </el-form-item>
-                <el-form-item label="总户数" prop="households">
-                    <el-input v-model="form.households"></el-input>
-                </el-form-item>
-                <el-form-item label="物业管理" prop="propertyName">
-                    <el-input v-model="form.propertyName"></el-input>
-                </el-form-item>
-
-                <el-form-item>
+                <el-form-item class="center">
                     <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
-                    <el-button>取消</el-button>
+                    <el-button @click="editVisible = false">取消</el-button>
+
                 </el-form-item>
             </el-form>
         </el-dialog>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible2" width="40%">
+        <el-dialog title="编辑" :visible.sync="editVisible2" width="60%">
             <el-form ref="form" :model="form2" label-width="100px">
-                <el-form-item label="楼盘名称">
-                    <el-input v-model="form2.premisesName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属土地">
-                    <el-select v-model="form2.landId" placeholder="请选择">
-                        <el-option
-                            v-for="item in selectLandData"
-                            :key="item.landId"
-                            :label="item.landName"
-                            :value="item.landId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="所属区域">
-                    <el-input :disabled="true" v-model="form2.administrativeName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属板块">
-                    <el-input :disabled="true" v-model="form2.plateName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属项目">
-                    <el-input :disabled="true" v-model="form2.projectName"></el-input>
-                </el-form-item>
-                <el-form-item label="楼盘总图">
-                    <el-upload
-                        class="upload-demo"
-                        action="http://39.98.126.20:7004/user/File/fileUpLoad"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleAvatarSuccess3"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                    >
-                        <el-button size="small" type="">点击上传总图</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="">
-                    <div class="img-box">
-                        <div v-for="(item, i) in form2.houseSunPicture" :key="i" class="img-item">
-                            <img width="100%" :src="item" alt="" />
-                            <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
-                        </div>
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="楼盘名称">
+                            <el-input v-model="form2.premisesName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属土地">
+                            <el-select v-model="form2.landId" placeholder="请选择">
+                                <el-option
+                                    v-for="item in selectLandData"
+                                    :key="item.landId"
+                                    :label="item.landName"
+                                    :value="item.landId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="所属区域">
+                            <el-input :disabled="true" v-model="form2.administrativeName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属板块">
+                            <el-input :disabled="true" v-model="form2.plateName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属项目">
+                            <el-input :disabled="true" v-model="form2.projectName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="楼盘总图">
+                            <el-upload
+                                class="upload-demo"
+                                action="http://39.98.126.20:7004/user/File/fileUpLoad"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :on-success="handleAvatarSuccess3"
+                                :before-remove="beforeRemove"
+                                multiple
+                                :on-exceed="handleExceed"
+                                :file-list="fileList"
+                            >
+                                <el-button size="small" type="">点击上传总图</el-button>
+                                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item label="">
+                            <div class="img-box">
+                                <div v-for="(item, i) in form2.houseSunPicture" :key="i" class="img-item">
+                                    <img width="100%" :src="item" alt="" />
+                                    <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
+                                </div>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item label="楼盘立面">
+                            <el-upload
+                                class="upload-demo"
+                                action="http://39.98.126.20:7004/user/File/fileUpLoad"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :before-remove="beforeRemove"
+                                :on-success="handleAvatarSuccess4"
+                                multiple
+                                :on-exceed="handleExceed"
+                                :file-list="fileList"
+                            >
+                                <el-button size="small" type="">点击上传立面</el-button>
+                                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                            </el-upload>
+                        </el-form-item>
+
+                        <el-form-item label="">
+                            <div class="img-box">
+                                <div v-for="(item, i) in form2.houseFacadePicture" :key="i" class="img-item">
+                                    <img width="100%" :src="item" alt="" />
+                                    <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
+                                </div>
+                            </div>
+                        </el-form-item>
                     </div>
-                </el-form-item>
-
-                <el-form-item label="楼盘立面">
-                    <el-upload
-                        class="upload-demo"
-                        action="http://39.98.126.20:7004/user/File/fileUpLoad"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :before-remove="beforeRemove"
-                        :on-success="handleAvatarSuccess4"
-                        multiple
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                    >
-                        <el-button size="small" type="">点击上传立面</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                    </el-upload>
-                </el-form-item>
-
-                <el-form-item label="">
-                    <div class="img-box">
-                        <div v-for="(item, i) in form2.houseFacadePicture" :key="i" class="img-item">
-                            <img width="100%" :src="item" alt="" />
-                            <i class="el-icon-close" @click="PremiseDeletePicture(item, i)"></i>
-                        </div>
+                    <div class="formBox-item">
+                        <el-form-item label="产品类型">
+                            <el-checkbox-group v-model="form2.plateLabelId">
+                                <el-checkbox v-for="(item, i) in productData" :key="i" :label="item.id" :value="item.id">{{
+                                    item.labelName
+                                }}</el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item>
+                        <el-form-item label="价格">
+                            <el-input v-model="form2.price"></el-input>
+                        </el-form-item>
+                        <el-form-item label="用地面积">
+                            <el-input @blur="blurSite('form2')" v-model="form2.siteArea"></el-input>
+                        </el-form-item>
+                        <el-form-item label="建筑面积">
+                            <el-input @blur="blurArchitecture('form2')" v-model="form2.architectureArea"></el-input>
+                        </el-form-item>
+                        <el-form-item label="容积率">
+                            <el-input :disabled="true" v-model="form2.plotRatio"></el-input>
+                        </el-form-item>
+                        <el-form-item label="成交日期">
+                            <el-date-picker v-model="form2.openingTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="开发商">
+                            <el-input v-model="form2.developersName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="总户数">
+                            <el-input v-model="form2.households"></el-input>
+                        </el-form-item>
+                        <el-form-item label="物业管理">
+                            <el-input v-model="form2.propertyName"></el-input>
+                        </el-form-item>
                     </div>
-                </el-form-item>
+                </div>
 
-                <el-form-item label="产品类型">
-                    <el-checkbox-group v-model="form2.plateLabelId">
-                        <el-checkbox v-for="(item, i) in productData" :key="i" :label="item.id" :value="item.id">{{
-                            item.labelName
-                        }}</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="价格">
-                    <el-input v-model="form2.price"></el-input>
-                </el-form-item>
-                <el-form-item label="用地面积">
-                    <el-input @blur="blurSite('form2')" v-model="form2.siteArea"></el-input>
-                </el-form-item>
-                <el-form-item label="建筑面积">
-                    <el-input @blur="blurArchitecture('form2')" v-model="form2.architectureArea"></el-input>
-                </el-form-item>
-                <el-form-item label="容积率">
-                    <el-input :disabled="true" v-model="form2.plotRatio"></el-input>
-                </el-form-item>
-                <el-form-item label="成交日期">
-                    <el-date-picker v-model="form2.openingTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="开发商">
-                    <el-input v-model="form2.developersName"></el-input>
-                </el-form-item>
-                <el-form-item label="总户数">
-                    <el-input v-model="form2.households"></el-input>
-                </el-form-item>
-                <el-form-item label="物业管理">
-                    <el-input v-model="form2.propertyName"></el-input>
-                </el-form-item>
-
-                <el-form-item>
+                <el-form-item class="center">
                     <el-button type="primary" @click="onSubmit2">表单提交</el-button>
-                    <el-button>取消</el-button>
+                    <el-button @click="editVisible2 = false">取消</el-button>
+
                 </el-form-item>
             </el-form>
         </el-dialog>

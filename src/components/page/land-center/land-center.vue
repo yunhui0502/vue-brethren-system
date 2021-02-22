@@ -63,151 +63,165 @@
         </div>
 
         <!-- 添加弹出框 -->
-        <el-dialog title="添加" :visible.sync="editVisible" width="40%">
+        <el-dialog title="添加" :visible.sync="editVisible" width="60%">
             <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                <el-form-item label="土地名称" prop="landName">
-                    <el-input v-model="form.landName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属项目" prop="projectId">
-                    <el-select v-model="form.projectId" placeholder="请选择">
-                        <el-option
-                            v-for="item in selectProjectData"
-                            :key="item.projectId"
-                            :label="item.projectName"
-                            :value="item.projectId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="土地地址" prop="landAddress">
-                    <el-input v-model="form.landAddress"></el-input>
-                </el-form-item>
-                <el-form-item label="所属板块" prop="plateId">
-                    <el-select v-model="form.plateId" placeholder="请选择">
-                        <el-option
-                            v-for="item in selectPlateData"
-                            :key="item.plateId"
-                            :label="item.plateName"
-                            :value="item.plateId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="用地面积">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="土地名称" prop="landName">
+                            <el-input v-model="form.landName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属项目" prop="projectId">
+                            <el-select v-model="form.projectId" placeholder="请选择">
+                                <el-option
+                                    v-for="item in selectProjectData"
+                                    :key="item.projectId"
+                                    :label="item.projectName"
+                                    :value="item.projectId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="土地地址" prop="landAddress">
+                            <el-input v-model="form.landAddress"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属板块" prop="plateId">
+                            <el-select v-model="form.plateId" placeholder="请选择">
+                                <el-option
+                                    v-for="item in selectPlateData"
+                                    :key="item.plateId"
+                                    :label="item.plateName"
+                                    :value="item.plateId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="用地面积">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
 
-                <el-form-item label="容积率">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="建筑面积">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="建筑密度" prop="density">
-                    <el-input v-model="form.density"></el-input>
-                </el-form-item>
-                <el-form-item label="成交日期" prop="succeedTime">
-                    <el-date-picker v-model="form.succeedTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="成交价" prop="transactionPrice">
-                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form.transactionPrice"></el-input>
-                </el-form-item>
-                <el-form-item label="起拍价" prop="startingPrice">
-                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form.startingPrice"></el-input>
-                </el-form-item>
-                <el-form-item label="受让方" prop="transfer">
-                    <el-input v-model="form.transfer"></el-input>
-                </el-form-item>
-                <el-form-item label="溢价率">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="楼面价">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="关联楼盘">
-                    <el-input :disabled="true" v-model="form.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="备注" prop="remark">
-                    <el-input type="textarea" rows="5" v-model="form.remark"></el-input>
-                </el-form-item>
-                <el-form-item>
+                        <el-form-item label="容积率">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="建筑面积">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="建筑密度" prop="density">
+                            <el-input v-model="form.density"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div class="formBox-item">
+                        <el-form-item label="成交日期" prop="succeedTime">
+                            <el-date-picker v-model="form.succeedTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="成交价" prop="transactionPrice">
+                            <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form.transactionPrice"></el-input>
+                        </el-form-item>
+                        <el-form-item label="起拍价" prop="startingPrice">
+                            <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form.startingPrice"></el-input>
+                        </el-form-item>
+                        <el-form-item label="受让方" prop="transfer">
+                            <el-input v-model="form.transfer"></el-input>
+                        </el-form-item>
+                        <el-form-item label="溢价率">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="楼面价">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="关联楼盘">
+                            <el-input :disabled="true" v-model="form.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注" prop="remark">
+                            <el-input type="textarea" rows="5" v-model="form.remark"></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+
+                <el-form-item class="center">
                     <el-button type="primary" @click="onSubmit('form')">表单提交</el-button>
-                    <el-button>取消</el-button>
+                    <el-button  @click="editVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible2" width="40%">
+        <el-dialog title="编辑" :visible.sync="editVisible2" width="60%">
             <el-form ref="form" :model="form2" label-width="100px">
-                <el-form-item label="土地名称">
-                    <el-input v-model="form2.landName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属项目">
-                    <el-select v-model="form2.projectId" placeholder="请选择">
-                        <el-option
-                            v-for="item in selectProjectData"
-                            :key="item.projectId"
-                            :label="item.projectName"
-                            :value="item.projectId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="土地地址">
-                    <el-input v-model="form2.landAddress"></el-input>
-                </el-form-item>
-                <el-form-item label="所属区域">
-                    <el-input v-model="form2.administrativeName"></el-input>
-                </el-form-item>
-                <el-form-item label="所属板块">
-                    <el-select v-model="form2.plateId" placeholder="请选择">
-                        <el-option
-                            v-for="item in selectPlateData"
-                            :key="item.plateId"
-                            :label="item.plateName"
-                            :value="item.plateId"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="用地面积">
-                    <el-input :disabled="true" v-model="form2.siteArea"></el-input>
-                </el-form-item>
+                <div class="formBox">
+                    <div class="formBox-item">
+                        <el-form-item label="土地名称">
+                            <el-input v-model="form2.landName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属项目">
+                            <el-select v-model="form2.projectId" placeholder="请选择">
+                                <el-option
+                                    v-for="item in selectProjectData"
+                                    :key="item.projectId"
+                                    :label="item.projectName"
+                                    :value="item.projectId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="土地地址">
+                            <el-input v-model="form2.landAddress"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属区域">
+                            <el-input v-model="form2.administrativeName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属板块">
+                            <el-select v-model="form2.plateId" placeholder="请选择">
+                                <el-option
+                                    v-for="item in selectPlateData"
+                                    :key="item.plateId"
+                                    :label="item.plateName"
+                                    :value="item.plateId"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="用地面积">
+                            <el-input :disabled="true" v-model="form2.siteArea"></el-input>
+                        </el-form-item>
 
-                <el-form-item label="容积率">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="建筑面积">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="建筑密度">
-                    <el-input v-model="form2.density"></el-input>
-                </el-form-item>
-                <el-form-item label="成交日期">
-                    <el-date-picker v-model="form2.succeedTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="成交价">
-                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form2.transactionPrice"></el-input>
-                </el-form-item>
-                <el-form-item label="起拍价">
-                    <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form2.startingPrice"></el-input>
-                </el-form-item>
-                <el-form-item label="受让方">
-                    <el-input v-model="form2.transfer"></el-input>
-                </el-form-item>
-                <el-form-item label="溢价率">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="楼面价">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="关联楼盘">
-                    <el-input :disabled="true" v-model="form2.name2"></el-input>
-                </el-form-item>
-                <el-form-item label="备注">
-                    <el-input type="textarea" rows="5" v-model="form2.remark"></el-input>
-                </el-form-item>
-                <el-form-item>
+                        <el-form-item label="容积率">
+                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="建筑面积">
+                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="建筑密度">
+                            <el-input v-model="form2.density"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div class="formBox-item">
+                        <el-form-item label="成交日期">
+                            <el-date-picker v-model="form2.succeedTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="成交价">
+                            <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form2.transactionPrice"></el-input>
+                        </el-form-item>
+                        <el-form-item label="起拍价">
+                            <el-input onkeyup="value=value.replace(/[^\d]/g,'')" v-model="form2.startingPrice"></el-input>
+                        </el-form-item>
+                        <el-form-item label="受让方">
+                            <el-input v-model="form2.transfer"></el-input>
+                        </el-form-item>
+                        <el-form-item label="溢价率">
+                            <el-input :disabled="true" v-model="form2.premium"></el-input>
+                        </el-form-item>
+                        <el-form-item label="楼面价">
+                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="关联楼盘">
+                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注">
+                            <el-input type="textarea" rows="5" v-model="form2.remark"></el-input>
+                        </el-form-item>
+                    </div>
+                </div>
+
+                <el-form-item class="center">
                     <el-button type="primary" @click="onSubmit2">表单提交</el-button>
-                    <el-button>取消</el-button>
+                    <el-button @click="editVisible2 = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -229,8 +243,7 @@ export default {
                 density: [{ required: true, message: '请输入建筑密度', trigger: 'changeblur' }],
                 succeedTime: [{ required: true, message: '请选择日期', trigger: 'change' }],
                 transactionPrice: [{ required: true, message: '请输入成交价格', trigger: 'blur' }],
-                startingPrice: [{ required: true, message: '请输入起拍价格', trigger: 'blur' },
-                ],
+                startingPrice: [{ required: true, message: '请输入起拍价格', trigger: 'blur' }],
                 transfer: [{ required: true, message: '请输入受让方名称', trigger: 'blur' }],
                 remark: [{ required: true, message: '请输入备注', trigger: 'blur' }]
             },
@@ -409,7 +422,7 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
-        // 编辑操作 siteArea
+        // 编辑操作 premium
         handleEdit(index, row) {
             this.idx = index;
             this.form2.administrativeName = row.administrativeName;
@@ -426,6 +439,7 @@ export default {
             this.form2.transfer = row.transfer;
             this.form2.landId = row.landId;
             this.editVisible2 = true;
+            this.form2.premium = row.transactionPrice / row.startingPrice;
         },
         // 分页导航
         handlePageChange(val) {

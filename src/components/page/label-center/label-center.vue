@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- ------------------------------------------------标签数据管理中心---------------------------------------------------------------------------------------- -->
+        <!-- ------------------------------------------------ 标签数据管理中心 ---------------------------------------------------------------------------------------- -->
         <div class="container">
             <div class="handle-box">
                 <div @click="tab(1)" :class="tabIndex == 1 ? 'button' : 'butt'">区域定位标签</div>
@@ -8,20 +8,19 @@
             </div>
             <!-- 第一部分 -->
             <div v-if="tabIndex == 1">
-                <div class="head">区域定位标签 <el-button @click="editVisible = true" plain>添加标签</el-button></div>
+                <div class="head">区域定位标签 <el-button @click="editVisible = true" type="primary">添加标签</el-button></div>
                 <div class="el-tag-box">
-                    <div class="el-tag-item" v-for="(item, i) in areaData" :key="i">
-                        <el-tag>{{ item.labelName }}</el-tag>
-                    </div>
+                    <div class="el-tag-item" v-for="(item, i) in areaData" :key="i">{{ item.labelName }}</div>
+                 
                 </div>
             </div>
 
             <!-- 第二部分 -->
             <div v-if="tabIndex == 2">
-                <div class="head">产品类型标签 <el-button @click="editVisible2 = true" plain>添加标签</el-button></div>
+                <div class="head">产品类型标签 <el-button @click="editVisible2 = true" type="primary">添加标签</el-button></div>
                 <div class="el-tag-box">
                     <div class="el-tag-item" v-for="(item, i) in productData" :key="i">
-                        <el-tag>{{ item.labelName }}</el-tag>
+                        {{ item.labelName }}
                     </div>
                 </div>
             </div>
@@ -62,8 +61,8 @@ export default {
     name: 'basetable',
     data() {
         return {
-             rules: {
-                name: [{ required: true, message: '请输入标签名称', trigger: 'blur' }],
+            rules: {
+                name: [{ required: true, message: '请输入标签名称', trigger: 'blur' }]
             },
             // -----------------------------------
             productData: '',
@@ -212,7 +211,7 @@ export default {
     height: 46px;
     line-height: 46px;
     text-align: center;
-    background-color: #5d7380;
+    background-color: #f5f7fa;
 
     .el-button {
         float: right;
@@ -221,11 +220,15 @@ export default {
 }
 .el-tag-box {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
-    margin: 20px 0;
     .el-tag-item {
-        // margin: 10px;
+        width: 150px;
+        height: 70px;
+        border-radius: 10px;
+        border:1px solid #C1C1C1;
+        margin: 20px;
+        text-align: center;
+        line-height: 70px;
     }
 }
 .handle-box {
@@ -238,7 +241,7 @@ export default {
         font-size: 18px;
         color: #ffffff;
         text-align: center;
-        background-color: #a2a2a2;
+        background-color: #b6b9be;
         margin: 20px;
     }
     .button {
@@ -249,7 +252,7 @@ export default {
         color: #ffffff;
         text-align: center;
         margin: 20px;
-        background-color: #5f7581;
+        background-color: #409eff;
     }
 }
 

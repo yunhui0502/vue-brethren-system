@@ -2,7 +2,17 @@
     margin: 0;
     padding: 0;
 }
+.formBox {
+    display:flex;
 
+}
+.formBox-item {
+        flex: 1;
+}
+.center {
+    display:flex;
+    justify-content : center;
+}
 html,
 body,
 #app,

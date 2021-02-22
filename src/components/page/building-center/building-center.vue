@@ -63,23 +63,29 @@
         </div>
         <!-- 添加库数据弹出框 -->
         <el-dialog title="添加库数据" :visible.sync="editVisible2" width="50%" center>
-            <el-form ref="form" :model="form" label-width="140px">
-                <el-form-item label="选择添加数据库">
+            <!-- <el-form ref="form" :model="form" label-width="140px"> -->
+            <div class="material-bxo">
+                <!-- <el-form-item label="选择添加数据库"> -->
+                <div class="material-item">
+                    <div class="dialog-footer">
+                        <!-- <span slot="footer" > -->
+                        <div class="text">选择添加数据库</div>
+                        <el-button type="primary" @click="towerLibrary">确 定</el-button>
+                        <!-- </span> -->
+                    </div>
                     <div class="material-radio-group">
                         <el-radio-group v-model="towerForm.libraryIds" size="small">
                             <el-radio v-for="item in selectLibraryData" :key="item.id" :label="item.id" border>{{
                                 item.libraryName
                             }}</el-radio>
                         </el-radio-group>
-
-                        <div class="dialog-footer">
-                            <!-- <span slot="footer" > -->
-                            <el-button type="primary" @click="towerLibrary">确 定</el-button>
-                            <!-- </span> -->
-                        </div>
                     </div>
-                </el-form-item>
-                <el-form-item label="选择添加数据库分类">
+                </div>
+
+                <div class="material-item">
+                    <!-- </el-form-item> -->
+                    <!-- <el-form-item label="选择添加数据库分类"> -->
+                    <div style="margin-bottom: 7%">选择添加数据库分类</div>
                     <div class="material-tock-box">
                         <div
                             @click="buttTab(i, item.towerLibrarys, item.id)"
@@ -91,6 +97,9 @@
                         </div>
                         <!-- <div @click="buttTab(2)" :class="TabIndex == 2 ? 'on' : 'material-tock-item'">构造做法库</div> -->
                     </div>
+                </div>
+
+                <div class="material-item material-bor">
                     <el-tree
                         :data="routeList"
                         show-checkbox
@@ -102,8 +111,12 @@
                         :props="defaultProps2"
                     >
                     </el-tree>
-                </el-form-item>
-            </el-form>
+                </div>
+
+                <!-- </el-form-item> -->
+            </div>
+
+            <!-- </el-form> -->
         </el-dialog>
 
         <!-- 编辑弹出框 -->
@@ -517,13 +530,46 @@ export default {
 </script>
 
 <style  lang="less" scoped>
+.material-bor {
+ border: 1px solid #ccc;
+ margin-top: 5%;
+}
+.material-item {
+    flex:1,
+}
+.material-bxo {
+    display: flex;
+}
+/deep/.el-radio-group {
+    font-size: 0;
+    display: flex;
+    flex-direction: column;
+}
+/deep/.el-radio--small.is-bordered {
+    width: 60%;
+}
+/deep/.el-radio.is-bordered + .el-radio.is-bordered {
+    margin-left: 0px;
+}
 .material-radio-group {
     padding: 8px;
     border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
     .dialog-footer {
         text-align: center;
-        margin: 0 auto;
-        margin-top: 30px;
+        // margin: 0 auto;
+        // margin-top: 30px;
+    }
+}
+.dialog-footer {
+    text-align: center;
+    // margin: 0 auto;
+    // margin-top: 30px;
+    margin-bottom: 2%;
+    display: flex;
+    .text {
+        margin-right: 20px;
     }
 }
 .material-tock-box {
@@ -531,6 +577,7 @@ export default {
     border: 1px solid #ccc;
     display: flex;
     // justify-content: space-between;
+    flex-direction: column;
     flex-wrap: wrap;
     .material-tock-item {
         margin: 10px;
