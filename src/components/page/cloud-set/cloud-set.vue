@@ -211,7 +211,7 @@ export default {
         handleAvatarSuccess(res, file) {
             this.imageUrl = URL.createObjectURL(file.raw);
             console.log(res);
-            this.systemForm.login = res.data;
+            this.systemForm.logo = res.data;
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);

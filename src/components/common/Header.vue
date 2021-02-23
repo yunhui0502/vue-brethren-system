@@ -5,7 +5,7 @@
             <i v-if="!collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <div class="logo"><img class="logimg" src="systemForm.logo" alt="">{{systemForm.systemName}}</div>
+        <div class="logo"><img class="logimg" :src="systemForm.logo" alt="">{{systemForm.systemName}}</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
