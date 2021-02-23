@@ -38,7 +38,7 @@
                 <el-table-column prop="projectName" align="center" label="所属项目"></el-table-column>
                 <el-table-column align="center" prop="administrativeName" label="所属区域"></el-table-column>
                 <el-table-column align="center" prop="plateName" label="所属板块"></el-table-column>
-                <el-table-column align="center" prop="architectureArea" label="容积率"></el-table-column>
+                <el-table-column align="center" prop="ratio" label="容积率"></el-table-column>
                 <el-table-column align="center" prop="transactionPrice" label="成交价格(亿元)"></el-table-column>
                 <el-table-column align="center" prop="transfer" label="受让方"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
@@ -181,10 +181,10 @@
                         </el-form-item>
 
                         <el-form-item label="容积率">
-                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                            <el-input :disabled="true" v-model="form2.ratio"></el-input>
                         </el-form-item>
                         <el-form-item label="建筑面积">
-                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                            <el-input :disabled="true" v-model="form2.architectureArea"></el-input>
                         </el-form-item>
                         <el-form-item label="建筑密度">
                             <el-input v-model="form2.density"></el-input>
@@ -208,10 +208,10 @@
                             <el-input :disabled="true" v-model="form2.premium"></el-input>
                         </el-form-item>
                         <el-form-item label="楼面价">
-                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                            <el-input :disabled="true" v-model="form2.accommodation"></el-input>
                         </el-form-item>
                         <el-form-item label="关联楼盘">
-                            <el-input :disabled="true" v-model="form2.name2"></el-input>
+                            <el-input :disabled="true" v-model="form2.premises"></el-input>
                         </el-form-item>
                         <el-form-item label="备注">
                             <el-input type="textarea" rows="5" v-model="form2.remark"></el-input>
@@ -422,10 +422,13 @@ export default {
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
-        // 编辑操作 premium
+        // 编辑操作
         handleEdit(index, row) {
             this.idx = index;
             this.form2.administrativeName = row.administrativeName;
+            this.form2.architectureArea = row.architectureArea;
+            this.form2.premises = row.premises + '';
+            this.form2.ratio = row.ratio;
             this.form2.density = row.density;
             this.form2.landAddress = row.landAddress;
             this.form2.landName = row.landName;
@@ -440,6 +443,7 @@ export default {
             this.form2.landId = row.landId;
             this.editVisible2 = true;
             this.form2.premium = row.transactionPrice / row.startingPrice;
+            this.form2.accommodation = row.transactionPrice / (row.architectureArea * row.ratio);
         },
         // 分页导航
         handlePageChange(val) {

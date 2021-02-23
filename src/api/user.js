@@ -326,9 +326,9 @@ function loginDelete(params) {
 function system(params) {
     let fd = new FormData();
     console.log(params);
-    fd.append('BottomCopyright', params.BottomCopyright);
-    fd.append('login', params.login);
-    fd.append('name', params.name);
+    fd.append('BottomCopyright', params.bottomCopyright);
+    fd.append('login', params.logo);
+    fd.append('name', params.systemName);
     return Axios.post(api + '/user/Login/system', fd);
 }
 // 添加区域
@@ -387,6 +387,7 @@ function addTower(params) {
     console.log(params);
     fd.append('premisesId', params.premisesId);
     fd.append('towerNo', params.towerNo);
+    fd.append('synchronizationNo', params.synchronizationNo);
     return Axios.post(api + '/user/Tower/addTower', fd);
 }
 // 查询库
@@ -493,6 +494,10 @@ function SelectTowerLibrary(params) {
     fd.append('towerId', params.towerId);
     return Axios.post(api + '/user/Tower/SelectTowerLibrary', fd);
 }
+// 系统设置查詢
+function systemSelect(params) {
+    return Axios.post(api + '/user/Login/systemSelect');
+}
 export default {
     adminLogin: adminLogin,
     phoneLogin: phoneLogin,
@@ -553,5 +558,5 @@ export default {
     updateLibraryCategory: updateLibraryCategory,
     deleteTower: deleteTower,
     SelectTowerLibrary: SelectTowerLibrary,
-    
+    systemSelect: systemSelect,
 };

@@ -5,7 +5,7 @@
             <i v-if="!collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <div class="logo">后台管理系统</div>
+        <div class="logo"><img class="logimg" src="systemForm.logo" alt="">{{systemForm.systemName}}</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
@@ -33,23 +33,39 @@
     </div>
 </template>
 <script>
+import userApi from '@/service/user.js';
 import bus from '../common/bus';
 export default {
     data() {
         return {
             collapse: false,
             fullscreen: false,
+            systemForm: {
+                bottomCopyright:'',
+                logo: '',
+                systemName: ''
+            },
             name: 'linxin',
             message: 2
         };
     },
     computed: {
+        
         username() {
             let username = localStorage.getItem('ms_username');
             return username ? username : this.name;
         }
     },
+    created() {
+        this.systemSelect();
+    },
     methods: {
+         systemSelect() {
+            userApi.systemSelect((res) => {
+                console.log('系统设置',res)
+                this.systemForm = res.data.data[0] 
+            });
+        },
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
@@ -98,6 +114,13 @@ export default {
 };
 </script>
 <style scoped>
+.logimg {
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
 .header {
     position: relative;
     box-sizing: border-box;

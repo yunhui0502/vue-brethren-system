@@ -179,6 +179,9 @@ async function deleteTower(params, handleResult) {
 async function SelectTowerLibrary(params, handleResult) {
    user.SelectTowerLibrary(params).then((res) => handleResult(res));
 }
+async function systemSelect(handleResult) {
+   user.systemSelect().then((res) => handleResult(res));
+}
 export default {
    adminLogin: adminLogin,
    phoneLogin: phoneLogin,
@@ -239,4 +242,5 @@ export default {
    updateLibraryCategory: updateLibraryCategory,
    deleteTower: deleteTower,
    SelectTowerLibrary: SelectTowerLibrary,
+   systemSelect: systemSelect,
 };

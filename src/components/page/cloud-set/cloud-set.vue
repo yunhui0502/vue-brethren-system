@@ -57,7 +57,7 @@
             <div v-if="tabIndex == 2" class="form-box">
                 <el-form ref="form" :model="form" label-width="100px">
                     <el-form-item label="软件名称">
-                        <el-input v-model="systemForm.name" placeholder="请输入软件系统名称"></el-input>
+                        <el-input v-model="systemForm.systemName" placeholder="请输入软件系统名称"></el-input>
                     </el-form-item>
 
                     <el-form-item label="loge图片">
@@ -77,16 +77,16 @@
                     <el-form-item label="">
                         <div class="img-box">
                             <div class="img-item">
-                                <img width="100%" :src="systemForm.login" alt="" />
+                                <img width="100%" :src="systemForm.logo" alt="" />
                                 <!-- <i class="el-icon-close" @click="deletePicture(item)"></i> -->
                             </div>
                         </div>
                     </el-form-item>
                     <el-form-item label="底部版权信息">
-                        <el-input v-model="form.BottomCopyright" placeholder="请输入版权信息"></el-input>
+                        <el-input v-model="systemForm.bottomCopyright" placeholder="请输入版权信息"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="onSubmit">提交</el-button>
+                        <el-button type="primary" @click="onSubmit">保存</el-button>
                         <!-- <el-button>取消</el-button> -->
                     </el-form-item>
                 </el-form>
@@ -142,6 +142,7 @@ export default {
                 userName: [{ required: true, message: '请输入账号', trigger: 'change' }]
             },
             // -----------------------------------
+            system:'',
             tabIndex: 1,
             fileList: [],
             form: {
@@ -150,9 +151,9 @@ export default {
                 phone: ''
             },
             systemForm: {
-                BottomCopyright: '',
-                login: '',
-                name: ''
+                bottomCopyright:'',
+                logo: '',
+                systemName: ''
             },
             // -----------------------------------
             query: {
@@ -173,8 +174,15 @@ export default {
     },
     created() {
         this.getData();
+        this.systemSelect();
     },
     methods: {
+        systemSelect() {
+            userApi.systemSelect((res) => {
+                console.log('系统设置',res)
+                this.systemForm = res.data.data[0] 
+            });
+        },
         // 保存编辑
         saveEdit(form) {
             this.$refs[form].validate((valid) => {
