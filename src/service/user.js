@@ -182,6 +182,18 @@ async function SelectTowerLibrary(params, handleResult) {
 async function systemSelect(handleResult) {
    user.systemSelect().then((res) => handleResult(res));
 }
+async function addExploit(params,handleResult) {
+   user.addExploit(params).then((res) => handleResult(res));
+}
+async function deletedExploit(params,handleResult) {
+   user.deletedExploit(params).then((res) => handleResult(res));
+}
+async function selectExploit(handleResult) {
+   user.selectExploit().then((res) => handleResult(res));
+}
+async function updateExploit(params,handleResult) {
+   user.updateExploit(params).then((res) => handleResult(res));
+}
 export default {
    adminLogin: adminLogin,
    phoneLogin: phoneLogin,
@@ -243,4 +255,9 @@ export default {
    deleteTower: deleteTower,
    SelectTowerLibrary: SelectTowerLibrary,
    systemSelect: systemSelect,
+
+   addExploit: addExploit,
+   deletedExploit: deletedExploit,
+   selectExploit: selectExploit,
+   updateExploit: updateExploit,
 };

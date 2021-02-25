@@ -106,8 +106,9 @@ function forbid(params) {
 function addProject(params) {
     let fd = new FormData();
     console.log(params);
-    fd.append('developersName', params.developersName);
     fd.append('projectName', params.projectName);
+    fd.append('exploitId', params.exploitId);
+    fd.append('developersName', params.developersName);
     return Axios.post(api + '/user/Login/addProject', fd);
 }
 // 删除项目
@@ -372,12 +373,16 @@ function addLibraryaddCategory(params) {
     fd.append('categoryName', params.categoryName);
     fd.append('libraryId', params.libraryId);
     fd.append('parentCategoryId', params.parentCategoryId);
-    if(params.text != undefined) {
-        console.log('111')
+    // if(params.Ttext != undefined) {
+        // console.log('111')
+        fd.append('Ttext', params.Ttext);
+    // }
+    // if(params.text != undefined) {
+        // console.log('111')
         fd.append('text', params.text);
-    }
+    // }
     if(params.text != undefined) {
-        fd.append('type', params.type);
+        // fd.append('type', params.type);
     }
     return Axios.post(api + '/user/Tower/addLibraryaddCategory', fd);
 }
@@ -471,13 +476,14 @@ function updateLibraryCategory(params) {
     fd.append('categoryId', params.categoryId);
     fd.append('categoryName', params.categoryName);
     fd.append('parentCategoryId', params.parentCategoryId);
-    if(params.text != undefined) {
-        console.log('111')
+    // if(params.text != undefined) {
+        // console.log('111')
         fd.append('text', params.text);
-    }
-    if(params.text != undefined) {
-        fd.append('type', params.type);
-    }
+        fd.append('Ttext', params.Ttext);
+    // }
+    // if(params.text != undefined) {
+        // fd.append('type', params.type);
+    // }
     return Axios.post(api + '/user/Tower/updateLibraryCategory', fd);
 }
 // 删除楼号
@@ -497,6 +503,32 @@ function SelectTowerLibrary(params) {
 // 系统设置查詢
 function systemSelect(params) {
     return Axios.post(api + '/user/Login/systemSelect');
+}
+// 新建开发
+function addExploit(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('exploitName', params.exploitName);
+    return Axios.post(api + '/user/Exploit/addExploit');
+}
+// 删除开发
+function deletedExploit(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('id', params.id);
+    return Axios.post(api + '/user/Exploit/deletedExploit');
+}
+// 查询开发
+function selectExploit() {
+    return Axios.post(api + '/user/Exploit/selectExploit');
+}
+// 修改开发
+function updateExploit(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('exploitName', params.exploitName);
+    fd.append('id', params.id);
+    return Axios.post(api + '/user/Exploit/updateExploit');
 }
 export default {
     adminLogin: adminLogin,
@@ -559,4 +591,9 @@ export default {
     deleteTower: deleteTower,
     SelectTowerLibrary: SelectTowerLibrary,
     systemSelect: systemSelect,
+
+    addExploit: addExploit,
+    deletedExploit: deletedExploit,
+    selectExploit: selectExploit,
+    updateExploit: updateExploit,
 };

@@ -124,7 +124,8 @@ export default {
                 categoryName: '', // 类名称
                 libraryId: '1', // 库id
                 parentCategoryId: '0', // 上级类目id 顶级传0
-                text: '', // 文本或者图片
+                text: [], // 文本或者图片
+                Ttext: [], // Ttext
                 type: 'text' // 文本或者图片类型
             },
             tableData: [],
@@ -153,7 +154,6 @@ export default {
     methods: {
         Onpreview(e) {
             // console.log(e.response.data);
-
             window.open(e.response.data);
         },
         change(e) {
@@ -168,7 +168,7 @@ export default {
         handleAvatarSuccess(res, file) {
             // this.imageUrl = URL.createObjectURL(file.raw);
             console.log(res);
-            this.form.text = res.data;
+            this.form.Ttext.push(res.data);
         },
         handleChange(file, fileList) {
             this.fileList = fileList.slice(-3);
@@ -225,17 +225,11 @@ export default {
             this.$refs[form].validate((valid) => {
                 if (valid) {
                     if (this.title == '编辑') {
-                            console.log(this.form.text);
-                            if (this.form.type == 'text') {
-                                this.form.text = this.$refs.blc.release();
-                            }
-                        if (this.form.text == '') {
-                            this.form = {
-                                categoryId: this.form.categoryId,
-                                categoryName: this.form.categoryName,
-                                libraryId: this.form.libraryId,
-                                parentCategoryId: this.form.parentCategoryId
-                            };
+                        console.log(this.form.text);
+                        if (this.form.isAddText == 0) {
+                            this.form.text = []
+                            this.form.Ttext = []
+                            this.form.text.push(this.$refs.blc.release())
                         }
                         userApi.updateLibraryCategory(this.form, (res) => {
                             console.log('编辑', res);
@@ -254,16 +248,7 @@ export default {
                             }, 10);
                         });
                     } else {
-                        if (this.form.type == 'text') {
-                            this.form.text = this.$refs.blc.release();
-                        }
-                        if (this.form.text == '') {
-                            this.form = {
-                                categoryName: this.form.categoryName,
-                                libraryId: this.form.libraryId,
-                                parentCategoryId: this.form.parentCategoryId
-                            };
-                        }
+                        this.form.text.push(this.$refs.blc.release());
                         console.log(this.form);
                         // console.log(richText);
                         userApi.addLibraryaddCategory(this.form, (res) => {
@@ -274,13 +259,16 @@ export default {
                                 categoryName: '', // 类名称
                                 libraryId: '1', // 库id
                                 parentCategoryId: '0', // 上级类目id 顶级传0
-                                text: '', // 文本或者图片
+                                text: [], // 文本或者图片
+                                Ttext: [], //
                                 type: 'text' // 文本或者图片类型
                             };
+                            this.getData();
+                              this.fileList = [];
                             setTimeout(() => {
                                 this.$refs.blc.setData('');
-                            }, 10)((this.fileList = [])),
-                                this.getData();
+                            }, 10);
+                                
                         });
                     }
                     this.$refs[form].resetFields();
@@ -378,22 +366,22 @@ export default {
                 this.$refs.blc.setData('');
             }, 10);
             if (row.type == undefined) {
-                this.form.type = undefined
+                this.form.type = undefined;
             }
-            if (row.type != undefined) {
-                if (row.type == 'TEXT') {
+            row.houseLibraryCategoryTexts.forEach((item) => {
+                //判断该节点是否为我点击的节点
+                if (item.type == 'text') {
                     setTimeout(() => {
-                        this.$refs.blc.setData(row.text);
+                        this.$refs.blc.setData(item.text);
                     }, 10);
-                }
-                if (row.type == 'PDF') {
+                } else {
                     let obj = {
-                        name: row.type,
-                        url: row.text
+                        name: item.type,
+                        url: item.text
                     };
                     this.fileList.push(obj);
                 }
-            }
+            });
         },
         // 分页导航
         handlePageChange(val) {

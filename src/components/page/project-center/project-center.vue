@@ -5,7 +5,11 @@
             <div class="handle-box">
                 <el-input v-model="query.name" placeholder="根据项目名称查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button type="primary" style="float: right; margin: 20px" @click="add">添加</el-button>
+                <el-button type="primary" style="float: right" @click="add">添加项目</el-button>
+                <el-button type="primary" style="float: right" @click="dialogFormVisible = true">添加开发商</el-button>
+                <!-- <el-select v-model="value" style="float: right" placeholder="请选择">
+                    <el-option v-for="item in options" :key="item.id" :label="item.exploitName" :value="item.id"> </el-option>
+                </el-select> -->
             </div>
             <el-table
                 :data="tableData.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize)"
@@ -16,10 +20,10 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column prop="projectName" align="center" label="项目名称"></el-table-column>
-                <el-table-column prop="address" align="center" label="开发商">
-                    <template slot-scope="scope">
+                <el-table-column prop="exploitName" align="center" label="开发商">
+                    <!-- <template slot-scope="scope">
                         <div v-for="(item, i) in scope.row.developers" :key="i">{{ item }}</div>
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
@@ -44,11 +48,17 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="title" :visible.sync="editVisible" width="50%" center>
+        <el-dialog :title="title" :visible.sync="editVisible" width="30%" center>
             <el-form ref="form" :model="form" label-width="100px">
                 <el-form-item label="项目名称">
                     <el-input v-model="form.projectName"></el-input>
                 </el-form-item>
+                <el-form-item label="开发商">
+                    <el-select v-model="form.exploitId" placeholder="请选择">
+                        <el-option v-for="item in options" :key="item.id" :label="item.exploitName" :value="item.id"> </el-option>
+                    </el-select>
+                </el-form-item>
+
                 <!-- <el-form-item label="开发商名称">
                     <el-input v-model="form.developersName"></el-input>
                 </el-form-item> -->
@@ -93,6 +103,18 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog title="添加" :visible.sync="dialogFormVisible" width="20%">
+            <el-form :model="countForm">
+                <el-form-item label="开发商名称">
+                    <el-input v-model="countForm.exploitName"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addroom">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -106,6 +128,7 @@ export default {
             title: '',
             selectPremisesData: '',
             Premisesarr: [],
+            options: [],
             query: {
                 address: '',
                 name: '',
@@ -114,9 +137,14 @@ export default {
             },
             form: {
                 projectName: '',
-                developersName: '开发商名称,开发商'
+                exploitId: '',
+                developersName: '112'
+            },
+            countForm: {
+                exploitName: ''
             },
             tableData: [],
+            dialogFormVisible: false,
             multipleSelection: [],
             delList: [],
             editVisible: false,
@@ -128,10 +156,24 @@ export default {
     },
     created() {
         this.getData();
-        // this.selectPremises();
+        this.selectExploit();
     },
 
     methods: {
+        selectExploit() {
+            userApi.selectExploit((res) => {
+                console.log('新建', res);
+                this.options = res.data.data;
+            });
+        },
+        addroom() {
+            userApi.addExploit(this.countForm, (res) => {
+                console.log(res);
+                this.$message.success('添加成功！');
+                this.dialogFormVisible = false;
+                this.selectExploit();
+            });
+        },
         examine(row) {
             this.editVisible2 = true;
             userApi.selectPremises({ projectId: row.projectId }, (res) => {
@@ -182,14 +224,24 @@ export default {
                     console.log('编辑', res);
                     this.$message.success('编辑成功');
                     this.editVisible = false;
-                    this.form = { projectName: '' };
+                    this.form = {
+                        projectName: '',
+                        exploitId: '',
+                        developersName: '112'
+                    };
+                    this.getData();
                 });
             } else {
                 userApi.addProject(this.form, (res) => {
                     console.log('添加', res);
                     this.$message.success('添加成功');
                     this.editVisible = false;
-                    this.form.projectName = '';
+                    this.form = {
+                        projectName: '',
+                        exploitId: '',
+                        developersName: '112'
+                    };
+                    this.getData();
                 });
             }
         },
