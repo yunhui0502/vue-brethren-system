@@ -10,8 +10,9 @@
             <div v-if="tabIndex == 1">
                 <div class="head">区域定位标签 <el-button @click="editVisible = true" type="primary">添加标签</el-button></div>
                 <div class="el-tag-box">
-                    <div class="el-tag-item" v-for="(item, i) in areaData" :key="i">{{ item.labelName }}</div>
-                 
+                    <div class="el-tag-item" v-for="(item, i) in areaData" :key="i">
+                        <i @click="clickIcon(i, item.id)" class="el-icon-close icon"></i> {{ item.labelName }}
+                    </div>
                 </div>
             </div>
 
@@ -20,7 +21,7 @@
                 <div class="head">产品类型标签 <el-button @click="editVisible2 = true" type="primary">添加标签</el-button></div>
                 <div class="el-tag-box">
                     <div class="el-tag-item" v-for="(item, i) in productData" :key="i">
-                        {{ item.labelName }}
+                        <i @click="clickIcon(i, item.id)" class="el-icon-close icon"></i> {{ item.labelName }}
                     </div>
                 </div>
             </div>
@@ -101,6 +102,24 @@ export default {
         this.selectLabel2();
     },
     methods: {
+        clickIcon(index, id) {
+            this.$confirm('确定要删除吗？', '提示', {
+                type: 'warning'
+            })
+                .then(() => {
+                    userApi.deleteLabel({ id: id }, (res) => {
+                        this.$message.success('删除成功');
+                        // this.tableData.splice(index, 1);
+                        this.selectLabel();
+                        this.selectLabel2();
+                    });
+                })
+                .catch(() => {});
+            userApi.selectLabel({ id: id }, (res) => {
+                console.log('区域定位标签', res);
+                this.areaData = res.data.data;
+            });
+        },
         selectLabel() {
             userApi.selectLabel({ type: 'area' }, (res) => {
                 console.log('区域定位标签', res);
@@ -225,10 +244,17 @@ export default {
         width: 150px;
         height: 70px;
         border-radius: 10px;
-        border:1px solid #C1C1C1;
+        border: 1px solid #c1c1c1;
         margin: 20px;
         text-align: center;
         line-height: 70px;
+        position: relative;
+        .icon {
+            position: absolute;
+            top: 10px;
+            bottom: 0;
+            right: 10px;
+        }
     }
 }
 .handle-box {

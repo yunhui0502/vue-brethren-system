@@ -50,6 +50,13 @@ function addLabel(params) {
     fd.append('type', params.type);
     return Axios.post(api + '/user/Label/addLabel', fd);
 }
+// 删除标签
+function deleteLabel(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('id', params.id);
+    return Axios.post(api + '/user/Label/deleteLabel', fd);
+}
 // 查询标签
 function selectLabel(params) {
     let fd = new FormData();
@@ -596,4 +603,6 @@ export default {
     deletedExploit: deletedExploit,
     selectExploit: selectExploit,
     updateExploit: updateExploit,
+
+    deleteLabel: deleteLabel
 };

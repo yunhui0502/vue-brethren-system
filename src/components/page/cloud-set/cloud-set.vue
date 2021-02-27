@@ -35,7 +35,10 @@
 
                     <el-table-column label="操作" width="180" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" icon="el-icon-remove-outline" @click="disabled(scope.$index, scope.row)">禁用</el-button>
+                            <el-button type="text" v-if="!scope.row.disabledType" icon="el-icon-remove-outline" @click="disabled(scope.$index, scope.row)">禁用</el-button>
+                            <el-button type="text" v-if="scope.row.disabledType" icon="el-icon-remove-outline" @click="disabled2(scope.$index, scope.row)"
+                                >启用</el-button
+                            >
                             <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)"
                                 >删除</el-button
                             >
@@ -141,8 +144,9 @@ export default {
                 password: [{ required: true, message: '密码', trigger: 'blur' }],
                 userName: [{ required: true, message: '请输入账号', trigger: 'change' }]
             },
+            disabledType: false,
             // -----------------------------------
-            system:'',
+            system: '',
             tabIndex: 1,
             fileList: [],
             form: {
@@ -151,7 +155,7 @@ export default {
                 phone: ''
             },
             systemForm: {
-                bottomCopyright:'',
+                bottomCopyright: '',
                 logo: '',
                 systemName: ''
             },
@@ -179,8 +183,8 @@ export default {
     methods: {
         systemSelect() {
             userApi.systemSelect((res) => {
-                console.log('系统设置',res)
-                this.systemForm = res.data.data[0] 
+                console.log('系统设置', res);
+                this.systemForm = res.data.data[0];
             });
         },
         // 保存编辑
@@ -236,6 +240,9 @@ export default {
             userApi.loginSelect((res) => {
                 console.log(res);
                 this.tableData = res.data.data;
+                this.tableData.forEach((item) => {
+                    item.disabledType = false
+                })
                 this.pageTotal = this.tableData.length;
             });
         },
@@ -276,14 +283,28 @@ export default {
         // 禁用
         disabled(index, row) {
             this.idx = index;
-            console.log(row.userId);
+            console.log(row);
             userApi.forbid({ userId: row.userId }, (res) => {
                 console.log(res);
                 this.$message.error(`已禁用`);
+                this.tableData[index].disabledType = true;
+                console.log(this.tableData)
+            });
+        },
+        disabled2(index, row) {
+            this.idx = index;
+            console.log(row.userId);
+            userApi.forbid({ userId: row.userId }, (res) => {
+                console.log(res);
+                // this.$message.error(`已禁用`);
+                this.$message({
+                    message: '已启用',
+                    type: 'success'
+                });
+                row.disabledType = false;
                 // this.editVisible = true;
             });
         },
-
         // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);

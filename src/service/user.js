@@ -194,6 +194,9 @@ async function selectExploit(handleResult) {
 async function updateExploit(params,handleResult) {
    user.updateExploit(params).then((res) => handleResult(res));
 }
+async function deleteLabel(params,handleResult) {
+   user.deleteLabel(params).then((res) => handleResult(res));
+}
 export default {
    adminLogin: adminLogin,
    phoneLogin: phoneLogin,
@@ -260,4 +263,6 @@ export default {
    deletedExploit: deletedExploit,
    selectExploit: selectExploit,
    updateExploit: updateExploit,
+
+   deleteLabel: deleteLabel,
 };
