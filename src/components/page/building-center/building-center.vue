@@ -85,16 +85,28 @@
                 <div class="material-item">
                     <!-- </el-form-item> -->
                     <!-- <el-form-item label="选择添加数据库分类"> -->
-                    <div style="margin-bottom: 7%">选择添加数据库分类</div>
+                    <!-- <div style="margin-bottom: 7%"></div> -->
+                    <div class="dialog-footer">
+                        <!-- <span slot="footer" > -->
+                        <div class="text">选择添加数据库分类</div>
+                        <el-button type="primary" @click="deleteTowerLibrary">删 除</el-button>
+                        <!-- </span> -->
+                    </div>
                     <div class="material-tock-box">
-                        <div
-                            @click="buttTab(i, item.towerLibrarys, item.id)"
+                         <el-radio-group v-model="TabIndex" size="small">
+                            <el-radio @change="buttTab(i, item.towerLibrarys, item.id)" v-for="(item,i) in TowerLibraryData" :key="item.id" :label="item.id" border>{{
+                                item.libraryName
+                            }}</el-radio>
+                        </el-radio-group>
+                        <!-- <div
+                        
+                            
                             v-for="(item, i) in TowerLibraryData"
                             :key="item.id"
                             :class="TabIndex == i ? 'on' : 'material-tock-item'"
                         >
                             {{ item.libraryName }}
-                        </div>
+                        </div> -->
                         <!-- <div @click="buttTab(2)" :class="TabIndex == 2 ? 'on' : 'material-tock-item'">构造做法库</div> -->
                     </div>
                 </div>
@@ -112,10 +124,8 @@
                     >
                     </el-tree>
                 </div>
-
                 <!-- </el-form-item> -->
             </div>
-
             <!-- </el-form> -->
         </el-dialog>
 
@@ -255,6 +265,20 @@ export default {
         this.selectAdministrative();
     },
     methods: {
+        deleteTowerLibrary() {
+            this.$confirm('确定要删除吗？', '提示', {
+                type: 'warning'
+            })
+                .then(() => {
+                    userApi.deleteTowerLibrary({ towerId: this.towerId,libraryId:this.TabIndex }, (res) => {
+                        console.log(res);
+                        this.$message.success('删除成功');
+                        // this.tableData.splice(index, 1);
+                        this.SelectTowerLibrary(this.towerId)
+                    });
+                })
+                .catch(() => {});
+        },
         generateMixed(n) {
             var res = '';
             for (var i = 0; i < n; i++) {
@@ -318,7 +342,7 @@ export default {
             });
         },
         buttTab(e, towerLibrarys, id) {
-            this.TabIndex = e;
+            // this.TabIndex = e;
             this.categoryForm.towerLibrarys = towerLibrarys;
             (this.checkedKeys = []),
                 userApi.selectLibraryDetails({ towerId: this.towerId, libraryId: id }, (res) => {
@@ -531,11 +555,11 @@ export default {
 
 <style  lang="less" scoped>
 .material-bor {
- border: 1px solid #ccc;
- margin-top: 5%;
+    border: 1px solid #ccc;
+    margin-top: 5%;
 }
 .material-item {
-    flex:1,
+    flex: 1;
 }
 .material-bxo {
     display: flex;
@@ -580,11 +604,14 @@ export default {
     flex-direction: column;
     flex-wrap: wrap;
     .material-tock-item {
+        padding: 8px 15px 0 10px;
+        border-radius: 3px;
+        height: 32px;
         margin: 10px;
         border: 1px solid #ccc;
-        width: 80px;
-        height: 40px;
-        line-height: 40px;
+        width: 60%;
+        // height: 40px;
+        line-height: 32px;
         text-align: center;
     }
     .on {
