@@ -35,8 +35,8 @@
 
                     <el-table-column label="操作" width="180" align="center">
                         <template slot-scope="scope">
-                            <el-button type="text" v-if="!scope.row.disabledType" icon="el-icon-remove-outline" @click="disabled(scope.$index, scope.row)">禁用</el-button>
-                            <el-button type="text" v-if="scope.row.disabledType" icon="el-icon-remove-outline" @click="disabled2(scope.$index, scope.row)"
+                            <el-button type="text" v-if="scope.row.state ==0" icon="el-icon-remove-outline" @click="disabled(scope.$index, scope.row)">禁用</el-button>
+                            <el-button type="text" v-if="scope.row.state == 1 " icon="el-icon-remove-outline" @click="disabled2(scope.$index, scope.row)"
                                 >启用</el-button
                             >
                             <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)"
@@ -120,6 +120,7 @@
 <script>
 import { fetchData } from '../../../api/index';
 import userApi from '@/service/user.js';
+
 export default {
     name: 'basetable',
     data() {
@@ -192,7 +193,7 @@ export default {
             this.$refs[form].validate((valid) => {
                 if (valid) {
                     console.log(this.form);
-                    userApi.addLogin(this.form, (res) => {
+                    Api.addLogin(this.form, (res) => {
                         console.log(res);
                         this.$message.success(`添加成功`);
                         this.editVisible = false;
@@ -240,9 +241,7 @@ export default {
             userApi.loginSelect((res) => {
                 console.log(res);
                 this.tableData = res.data.data;
-                this.tableData.forEach((item) => {
-                    item.disabledType = false
-                })
+               
                 this.pageTotal = this.tableData.length;
             });
         },

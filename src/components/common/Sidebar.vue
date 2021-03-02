@@ -69,6 +69,11 @@ export default {
                 },
                 {
                     icon: '',
+                    index: 'developers',
+                    title: '开发商管理中心'
+                },
+                {
+                    icon: '',
                     index: 'area-center',
                     title: '区域板块管理中心'
                 },
@@ -214,7 +219,7 @@ export default {
                 // console.log(item)
                 obj.index = 'library-center?id=' + item.id;
                 obj.title = item.libraryName;
-                this.items[9].subs.push(obj);
+                this.items[10].subs.push(obj);
             });
         });
     },

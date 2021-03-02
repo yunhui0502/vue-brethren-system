@@ -197,6 +197,12 @@ async function updateExploit(params,handleResult) {
 async function deleteLabel(params,handleResult) {
    user.deleteLabel(params).then((res) => handleResult(res));
 }
+async function addUsert(params,handleResult) {
+   user.addUsert(params).then((res) => handleResult(res));
+}
+async function userSelect(params,handleResult) {
+   user.userSelect(params).then((res) => handleResult(res));
+}
 export default {
    adminLogin: adminLogin,
    phoneLogin: phoneLogin,
@@ -265,4 +271,6 @@ export default {
    updateExploit: updateExploit,
 
    deleteLabel: deleteLabel,
+   addUsert: addUsert,
+   userSelect: userSelect,
 };

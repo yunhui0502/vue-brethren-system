@@ -65,7 +65,7 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="添加" :visible.sync="dialogFormVisible2" width="20%">
+        <el-dialog title="添加" :visible.sync="dialogFormVisible2" width="50%">
             <el-table class="goods-table" :data="options" stripe>
                 <!-- <el-table-column type="selection"></el-table-column> -->
                 <el-table-column label="所属行政区域">
@@ -88,7 +88,7 @@
             </el-table>
         </el-dialog>
         <!-- 添加弹出框 -->
-        <el-dialog title="添加" :visible.sync="editVisible" width="60%">
+        <el-dialog title="添加" :visible.sync="editVisible" width="80%">
             <el-form ref="form" :rules="rules" :model="form" label-width="130px">
                 <div class="formBox">
                     <div class="formBox-item">

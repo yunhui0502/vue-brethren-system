@@ -25,6 +25,11 @@ export default new Router({
                     meta: { title: '用户中心' }
                 },
                 {
+                    path: '/developers',
+                    component: () => import(/* webpackChunkName: "icon" */ '../components/page/developers/developers'),
+                    meta: { title: '开发商管理中心' }
+                },
+                {
                     path: '/cloud-set',
                     component: () => import(/* webpackChunkName: "icon" */ '../components/page/cloud-set/cloud-set'),
                     meta: { title: '云管理设置' }

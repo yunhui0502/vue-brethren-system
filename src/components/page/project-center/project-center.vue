@@ -6,7 +6,7 @@
                 <el-input v-model="query.name" placeholder="根据项目名称查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" style="float: right" @click="add">添加项目</el-button>
-                <el-button type="primary" style="float: right" @click="dialogFormVisible = true">添加开发商</el-button>
+                <!-- <el-button type="primary" style="float: right" @click="dialogFormVisible = true">添加开发商</el-button> -->
                 <!-- <el-select v-model="value" style="float: right" placeholder="请选择">
                     <el-option v-for="item in options" :key="item.id" :label="item.exploitName" :value="item.id"> </el-option>
                 </el-select> -->

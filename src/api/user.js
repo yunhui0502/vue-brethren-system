@@ -516,14 +516,14 @@ function addExploit(params) {
     let fd = new FormData();
     console.log(params);
     fd.append('exploitName', params.exploitName);
-    return Axios.post(api + '/user/Exploit/addExploit');
+    return Axios.post(api + '/user/Exploit/addExploit', fd);
 }
 // 删除开发
 function deletedExploit(params) {
     let fd = new FormData();
     console.log(params);
     fd.append('id', params.id);
-    return Axios.post(api + '/user/Exploit/deletedExploit');
+    return Axios.post(api + '/user/Exploit/deletedExploit', fd);
 }
 // 查询开发
 function selectExploit() {
@@ -535,7 +535,22 @@ function updateExploit(params) {
     console.log(params);
     fd.append('exploitName', params.exploitName);
     fd.append('id', params.id);
-    return Axios.post(api + '/user/Exploit/updateExploit');
+    return Axios.post(api + '/user/Exploit/updateExploit', fd);
+}
+// 添加用户
+function addUsert(params) {
+    let fd = new FormData();
+    console.log(params);
+    fd.append('email', params.email);
+    fd.append('name', params.name);
+    fd.append('password', params.password);
+    fd.append('phone', params.phone);
+    fd.append('userName', params.userName);
+    return Axios.post(api + '/user/User/addUser', fd);
+}
+// 用户登录查询
+function userSelect(params) {
+    return Axios.get(api + '/user/User/userSelect', { params });
 }
 export default {
     adminLogin: adminLogin,
@@ -604,5 +619,7 @@ export default {
     selectExploit: selectExploit,
     updateExploit: updateExploit,
 
-    deleteLabel: deleteLabel
+    deleteLabel: deleteLabel,
+    addUsert: addUsert,
+    userSelect: userSelect,
 };
