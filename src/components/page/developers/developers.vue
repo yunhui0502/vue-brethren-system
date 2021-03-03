@@ -100,7 +100,6 @@ export default {
     },
 
     methods: {
-
         // 获取 easy-mock 的模拟数据
         getData() {
             userApi.selectExploit((res) => {
@@ -123,16 +122,13 @@ export default {
                     this.getData();
                 });
             } else {
-                userApi.addExploit(this.form, (res) => {
-                    userApi.addExploit(this.countForm, (res) => {
-                        console.log(res);
-                        this.$message.success('添加成功！');
-                        this.dialogFormVisible = false;
-                        this.countForm = {
-                            exploitName: ''
-                        };
-                        this.getData();
-                    });
+                userApi.addExploit(this.countForm, (res) => {
+                    console.log(res);
+                    this.$message.success('添加成功！');
+                    this.dialogFormVisible = false;
+                    this.countForm = {
+                        exploitName: ''
+                    };
                     this.getData();
                 });
             }
