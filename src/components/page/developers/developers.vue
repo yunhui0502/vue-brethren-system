@@ -123,7 +123,7 @@ export default {
                     this.getData();
                 });
             } else {
-                userApi.addProject(this.form, (res) => {
+                userApi.addExploit(this.form, (res) => {
                     userApi.addExploit(this.countForm, (res) => {
                         console.log(res);
                         this.$message.success('添加成功！');

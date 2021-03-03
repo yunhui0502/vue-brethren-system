@@ -193,7 +193,7 @@ export default {
             this.$refs[form].validate((valid) => {
                 if (valid) {
                     console.log(this.form);
-                    Api.addLogin(this.form, (res) => {
+                    userApi.addLogin(this.form, (res) => {
                         console.log(res);
                         this.$message.success(`添加成功`);
                         this.editVisible = false;
