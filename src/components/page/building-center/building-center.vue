@@ -63,16 +63,22 @@
         </div>
         <!-- 添加库数据弹出框 -->
         <el-dialog title="添加库数据" :visible.sync="editVisible2" width="50%" center>
-            <!-- <el-form ref="form" :model="form" label-width="140px"> -->
             <div class="material-bxo">
-                <!-- <el-form-item label="选择添加数据库"> -->
+                <div class="dialog-footer" style="margin-right: 75px;">
+                    <div class="text">选择添加数据库</div>
+                    <el-button type="primary" @click="towerLibrary">确 定</el-button>
+                    <!-- </span> -->
+                </div>
+
+                <div class="dialog-footer">
+                    <!-- <span slot="footer" > -->
+                    <div class="text">选择添加数据库分类</div>
+                    <el-button type="primary" @click="deleteTowerLibrary">删 除</el-button>
+                    <!-- </span> -->
+                </div>
+            </div>
+            <div class="material-bxo">
                 <div class="material-item">
-                    <div class="dialog-footer">
-                        <!-- <span slot="footer" > -->
-                        <div class="text">选择添加数据库</div>
-                        <el-button type="primary" @click="towerLibrary">确 定</el-button>
-                        <!-- </span> -->
-                    </div>
                     <div class="material-radio-group">
                         <el-radio-group v-model="towerForm.libraryIds" size="small">
                             <el-radio v-for="item in selectLibraryData" :key="item.id" :label="item.id" border>{{
@@ -83,31 +89,17 @@
                 </div>
 
                 <div class="material-item">
-                    <!-- </el-form-item> -->
-                    <!-- <el-form-item label="选择添加数据库分类"> -->
-                    <!-- <div style="margin-bottom: 7%"></div> -->
-                    <div class="dialog-footer">
-                        <!-- <span slot="footer" > -->
-                        <div class="text">选择添加数据库分类</div>
-                        <el-button type="primary" @click="deleteTowerLibrary">删 除</el-button>
-                        <!-- </span> -->
-                    </div>
                     <div class="material-tock-box">
-                         <el-radio-group v-model="TabIndex" size="small">
-                            <el-radio @change="buttTab(i, item.towerLibrarys, item.id)" v-for="(item,i) in TowerLibraryData" :key="item.id" :label="item.id" border>{{
-                                item.libraryName
-                            }}</el-radio>
+                        <el-radio-group v-model="TabIndex" size="small">
+                            <el-radio
+                                @change="buttTab(i, item.towerLibrarys, item.id)"
+                                v-for="(item, i) in TowerLibraryData"
+                                :key="item.id"
+                                :label="item.id"
+                                border
+                                >{{ item.libraryName }}</el-radio
+                            >
                         </el-radio-group>
-                        <!-- <div
-                        
-                            
-                            v-for="(item, i) in TowerLibraryData"
-                            :key="item.id"
-                            :class="TabIndex == i ? 'on' : 'material-tock-item'"
-                        >
-                            {{ item.libraryName }}
-                        </div> -->
-                        <!-- <div @click="buttTab(2)" :class="TabIndex == 2 ? 'on' : 'material-tock-item'">构造做法库</div> -->
                     </div>
                 </div>
 
@@ -134,6 +126,9 @@
             <el-form ref="form" :rules="rules" :model="form" label-width="120px">
                 <el-form-item label="楼号名称" prop="towerNo">
                     <el-input v-model="form.towerNo"></el-input>
+                </el-form-item>
+                <el-form-item label="序列号" prop="sequence">
+                    <el-input v-model="form.sequence"></el-input>
                 </el-form-item>
                 <el-form-item label="同步楼号" prop="synchronizationNo">
                     <el-select v-model="form.synchronizationNo" placeholder="请选择">
@@ -169,6 +164,7 @@ export default {
         return {
             rules: {
                 towerNo: [{ required: true, message: '请输入楼号名称', trigger: 'blur' }],
+                sequence: [{ required: true, message: '请输入序列号', trigger: 'blur' }],
                 // synchronizationNo: [{ required: true, message: '请输入楼号名称', trigger: 'change' }],
                 premisesId: [{ required: true, message: '请选择所属楼盘', trigger: 'change' }]
             },
@@ -233,7 +229,8 @@ export default {
             form: {
                 premisesId: '', //所属楼盘id
                 synchronizationNo: '', //同步数据的楼号
-                towerNo: '' //楼号名称
+                towerNo: '', //楼号名称
+                sequence: ''
             },
             towerForm: {
                 libraryIds: '',
@@ -270,11 +267,11 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    userApi.deleteTowerLibrary({ towerId: this.towerId,libraryId:this.TabIndex }, (res) => {
+                    userApi.deleteTowerLibrary({ towerId: this.towerId, libraryId: this.TabIndex }, (res) => {
                         console.log(res);
                         this.$message.success('删除成功');
                         // this.tableData.splice(index, 1);
-                        this.SelectTowerLibrary(this.towerId)
+                        this.SelectTowerLibrary(this.towerId);
                     });
                 })
                 .catch(() => {});
@@ -476,23 +473,17 @@ export default {
         saveEdit(form) {
             this.$refs[form].validate((valid) => {
                 if (valid) {
-                    if (this.title == '编辑') {
-                        userApi.updateProject(this.form, (res) => {
-                            console.log('编辑', res);
-                            this.$message.success('编辑成功');
-                            this.editVisible = false;
-                            this.form = { projectName: '' };
-                            this.getData();
-                        });
-                    } else {
-                        userApi.addTower(this.form, (res) => {
-                            console.log('添加', res);
-                            this.$message.success('添加成功');
-                            this.editVisible = false;
-                            this.form.projectName = '';
-                            this.getData();
-                        });
-                    }
+                    // if (this.title == '编辑') {
+
+                    // } else {
+                    userApi.addTower(this.form, (res) => {
+                        console.log('添加', res);
+                        this.$message.success('添加成功');
+                        this.editVisible = false;
+                        this.form.projectName = '';
+                        this.getData();
+                    });
+                    // }
                 } else {
                     console.log('error submit!!');
                     //  this.$refs[form].resetFields();
@@ -542,6 +533,7 @@ export default {
             this.title = '编辑';
             this.form.projectName = row.projectName;
             this.form.projectId = row.projectId;
+            this.form.projectId = row.projectId;
             this.editVisible = true;
         },
         // 分页导航
@@ -556,7 +548,7 @@ export default {
 <style  lang="less" scoped>
 .material-bor {
     border: 1px solid #ccc;
-    margin-top: 5%;
+    // margin-top: 5%;
 }
 .material-item {
     flex: 1;

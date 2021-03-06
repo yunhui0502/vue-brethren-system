@@ -11,7 +11,7 @@
                 <div class="head">区域定位标签 <el-button @click="editVisible = true" type="primary">添加标签</el-button></div>
                 <div class="el-tag-box">
                     <div class="el-tag-item" v-for="(item, i) in areaData" :key="i">
-                        <i @click="clickIcon(i, item.id)" class="el-icon-close icon"></i> {{ item.labelName }}
+                        <i @click="clickIcon(i, item.id)" class="el-icon-circle-close icon"></i> {{ item.labelName }}
                     </div>
                 </div>
             </div>
@@ -21,7 +21,7 @@
                 <div class="head">产品类型标签 <el-button @click="editVisible2 = true" type="primary">添加标签</el-button></div>
                 <div class="el-tag-box">
                     <div class="el-tag-item" v-for="(item, i) in productData" :key="i">
-                        <i @click="clickIcon(i, item.id)" class="el-icon-close icon"></i> {{ item.labelName }}
+                        <i @click="clickIcon(i, item.id)" class="el-icon-circle-close icon"></i> {{ item.labelName }}
                     </div>
                 </div>
             </div>
@@ -251,9 +251,11 @@ export default {
         position: relative;
         .icon {
             position: absolute;
-            top: 10px;
+            top: 4px;
             bottom: 0;
-            right: 10px;
+            right: 4px;
+            font-size: 14px;
+            color: #C1C1C1;
         }
     }
 }

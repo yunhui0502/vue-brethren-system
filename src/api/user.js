@@ -400,6 +400,7 @@ function addTower(params) {
     fd.append('premisesId', params.premisesId);
     fd.append('towerNo', params.towerNo);
     fd.append('synchronizationNo', params.synchronizationNo);
+    fd.append('sequence', params.sequence);
     return Axios.post(api + '/user/Tower/addTower', fd);
 }
 // 查询库
