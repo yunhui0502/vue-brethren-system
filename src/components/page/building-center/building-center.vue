@@ -35,7 +35,7 @@
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
-                <el-table-column prop="serial" align="center" label="序列号"></el-table-column>
+                <el-table-column prop="sequence" align="center" label="序列号"></el-table-column>
                 <!-- <el-table-column type="index" align="center" width="80" label="序列号"> </el-table-column> -->
                 <el-table-column prop="premisesName" align="center" label="所属楼盘"></el-table-column>
                 <el-table-column prop="towerName" align="center" label="楼号"></el-table-column>
