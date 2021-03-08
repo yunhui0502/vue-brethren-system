@@ -39,7 +39,7 @@
                 <!-- <el-table-column type="index" align="center" width="80" label="序列号"> </el-table-column> -->
                 <el-table-column prop="premisesName" align="center" label="所属楼盘"></el-table-column>
                 <el-table-column prop="towerName" align="center" label="楼号"></el-table-column>
-                <el-table-column prop="address" align="center" label="数据同步楼号"></el-table-column>
+                <el-table-column prop="synchronizationName" align="center" label="数据同步楼号"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <!-- <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
@@ -64,7 +64,7 @@
         <!-- 添加库数据弹出框 -->
         <el-dialog title="添加库数据" :visible.sync="editVisible2" width="50%" center>
             <div class="material-bxo">
-                <div class="dialog-footer" style="margin-right: 75px;">
+                <div class="dialog-footer" style="margin-right: 75px">
                     <div class="text">选择添加数据库</div>
                     <el-button type="primary" @click="towerLibrary">确 定</el-button>
                     <!-- </span> -->
@@ -480,8 +480,14 @@ export default {
                         console.log('添加', res);
                         this.$message.success('添加成功');
                         this.editVisible = false;
-                        this.form.projectName = '';
-                        this.getData();
+                        // this.form.projectName = '';
+                        (this.form = {
+                            premisesId: '', //所属楼盘id
+                            synchronizationNo: '', //同步数据的楼号
+                            towerNo: '', //楼号名称
+                            sequence: ''
+                        }),
+                            this.getData();
                     });
                     // }
                 } else {
