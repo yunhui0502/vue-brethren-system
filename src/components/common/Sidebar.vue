@@ -35,6 +35,10 @@
                     </el-menu-item>
                 </template>
             </template>
+            <div class="box">
+                <div class="logo"><img class="logimg" :src="systemForm.logo" alt="" />{{ systemForm.systemName }}</div>
+                <div class="tac">{{ systemForm.bottomCopyright }}</div>
+            </div>
         </el-menu>
     </div>
 </template>
@@ -45,6 +49,7 @@ import userApi from '@/service/user.js';
 export default {
     data() {
         return {
+            systemForm: '',
             collapse: false,
             items: [
                 // {
@@ -222,6 +227,10 @@ export default {
                 this.items[10].subs.push(obj);
             });
         });
+        userApi.systemSelect((res) => {
+            console.log('系统设置', res);
+            this.systemForm = res.data.data[0];
+        });
     },
     created() {
         // 通过 Event Bus 进行组件间通信，来折叠侧边栏
@@ -233,7 +242,25 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.logimg {
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.box {
+    padding-top: 16px;
+    /* height: 100%; */
+    background-color: #324157;
+    color: #BFCBD9;
+}
+.tac {
+    margin-top: 8px;
+    text-align: center;
+    padding-bottom: 8px;
+}
 .sidebar {
     display: block;
     position: absolute;
@@ -252,6 +279,9 @@ export default {
     height: 100%;
 }
 .el-menu-item {
+    font-size: 16px;
+}
+/deep/.el-submenu__title {
     font-size: 16px;
 }
 </style>

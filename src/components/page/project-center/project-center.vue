@@ -19,7 +19,7 @@
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
-                <el-table-column prop="projectName" align="center" label="项目名称"></el-table-column>
+                <el-table-column prop="projectName" align="center" width="300" label="项目名称"></el-table-column>
                 <el-table-column prop="exploitName" align="center" label="开发商">
                     <!-- <template slot-scope="scope">
                         <div v-for="(item, i) in scope.row.developers" :key="i">{{ item }}</div>
@@ -57,6 +57,9 @@
                     <el-select v-model="form.exploitId" placeholder="请选择">
                         <el-option v-for="item in options" :key="item.id" :label="item.exploitName" :value="item.id"> </el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="开发商">
+                      <el-input type="textarea" v-model="form.remark"></el-input>
                 </el-form-item>
 
                 <!-- <el-form-item label="开发商名称">
@@ -136,6 +139,7 @@ export default {
                 pageSize: 10
             },
             form: {
+                remark:'',
                 projectName: '',
                 exploitId: '',
                 developersName: '112'
@@ -239,6 +243,7 @@ export default {
                     this.form = {
                         projectName: '',
                         exploitId: '',
+                        remark:'',
                         developersName: '112'
                     };
                     this.getData();

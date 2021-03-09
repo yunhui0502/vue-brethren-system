@@ -115,6 +115,7 @@ function addProject(params) {
     console.log(params);
     fd.append('projectName', params.projectName);
     fd.append('exploitId', params.exploitId);
+    fd.append('remark', params.remark);
     fd.append('developersName', params.developersName);
     return Axios.post(api + '/user/Login/addProject', fd);
 }
