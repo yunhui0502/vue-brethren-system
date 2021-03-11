@@ -58,7 +58,7 @@
                         <el-option v-for="item in options" :key="item.id" :label="item.exploitName" :value="item.id"> </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="开发商">
+                <el-form-item label="备注">
                       <el-input type="textarea" v-model="form.remark"></el-input>
                 </el-form-item>
 
@@ -292,6 +292,8 @@ export default {
             this.title = '编辑';
             this.form.projectName = row.projectName;
             this.form.projectId = row.projectId;
+            this.form.exploitId = row.exploitid;
+            this.form.remark = row.remark;
             this.editVisible = true;
         },
         // 分页导航
